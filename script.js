@@ -1,0 +1,1001 @@
+/*
+  Welcome to Hogwarts — Interactive Portfolio Game Engine
+  DOM-based scene system with physics, camera, and interactive hotspots.
+  
+  Scenes:
+    - outside: Hogwarts grounds (CSS gradient bg). Walk to the door to enter.
+    - inside:  Common room. Explore to find portfolio items (Skills, Experience, Projects, About).
+*/
+
+// =============================================
+// CONFIG
+// =============================================
+const CONFIG = {
+    reference: { width: 1440, height: 900 },
+    character: {
+        width: 160,
+        height: 260,
+        speed: 360,        // gentler: px per second
+        jumpSpeed: 700,
+        spawnOutside: { xPct: 25, yPct: 85 },
+        spawnInside: { xPct: 25, yPct: 85 }
+    },
+    physics: {
+        gravity: 1400,
+        groundOffsetOutside: 30,
+        groundOffsetInside: 70
+    },
+    outside: {
+        widthMultiplier: 1.3,   // world is 1.3x viewport width
+        door: { xPct: 75, radius: 120 }
+    },
+    inside: {
+        widthMultiplier: 1.3,
+        exit: { xPct: 75, radius: 120 },
+        hotspots: [
+            { id: 'skills', icon: '📜', label: 'Skills & Spells', xPct: 25 },
+            { id: 'experience', icon: '📋', label: 'Work Experience', xPct: 50 },
+            { id: 'projects', icon: '📚', label: 'Project Archives', xPct: 70 },
+            { id: 'about', icon: '✨', label: 'About Me', xPct: 90 }
+        ],
+        hotspotRadius: 100
+    },
+    // How far horizontally the character is allowed to move (as % of world width)
+    // Lowering the maxPct “shrinks” the walkable area.
+    bounds: {
+        outside: { minPct: 17, maxPct: 75 },
+        inside: { minPct: 10, maxPct: 90 }
+    },
+    transitionMs: 400
+};
+
+// =============================================
+// STATE
+// =============================================
+let scene = 'outside';
+let keys = new Set();
+let lastTime = 0;
+let worldW = 0, worldH = 0;
+let charX = 0, charY = 0;
+let cameraX = 0;
+let vx = 0;
+let vy = 0;
+let onGround = false;
+let lastFacing = 1;     // 1 = right, -1 = left
+let isMoving = false;
+let canInteract = false;
+let currentInteraction = null;
+let overlayOpen = false;
+let chatTimerId = null;
+let idleChatTimerId = null;
+let hasStartedMoving = false;
+let sceneTransitioning = false;
+let enterAnimRunning = false;
+
+const IDLE_CHAT_LINES = [
+    "The castle is watching...",
+    "Did you know the portraits talk when you're not looking?",
+    "A good wizard never reveals their secrets...",
+    "The stairs move when you're not paying attention...",
+    "Keep exploring — there are hidden paths everywhere."
+];
+
+// Sprite animation state
+let walkFrame = 0;
+let walkFrameTimer = 0;
+const WALK_FRAME_INTERVAL = 0.15; // seconds between walk frames
+
+// =============================================
+// DOM ELEMENTS
+// =============================================
+const loadingScreen = document.getElementById('loading-screen');
+const progressFill = document.getElementById('progress-fill');
+const progressText = document.getElementById('progress-text');
+const enterBtn = document.getElementById('enter-btn');
+
+const gameEl = document.getElementById('game');
+const worldEl = document.getElementById('world');
+const bgEl = document.getElementById('bg');
+const charEl = document.getElementById('character');
+
+const spotlightEl = document.getElementById('spotlight-overlay');
+const interactBtn = document.getElementById('interact');
+const chatEl = document.getElementById('chat');
+const fadeEl = document.getElementById('fade');
+const backButton = document.getElementById('back-button');
+const instructionsEl = document.getElementById('movement-instructions');
+const touchControlsEl = document.getElementById('touch-controls');
+
+// Theme toggle (Luminus / Nox)
+const themeToggleBtn = document.getElementById('theme-toggle');
+const THEME_KEY = 'hogwarts.theme';
+let themeMode = 'light';
+
+function applyTheme(mode) {
+    themeMode = mode === 'nox' ? 'nox' : 'light';
+
+    // Only apply UI background theme when outside.
+    if (bgEl.classList.contains('scene-outside')) {
+        bgEl.dataset.theme = themeMode;
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.textContent = themeMode === 'nox' ? 'Luminus' : 'Nox';
+    }
+
+    try {
+        localStorage.setItem(THEME_KEY, themeMode);
+    } catch (e) {
+        // Ignore if storage is unavailable.
+    }
+}
+
+function toggleTheme() {
+    applyTheme(themeMode === 'nox' ? 'light' : 'nox');
+}
+
+function initTheme() {
+    const saved = (function () {
+        try {
+            return localStorage.getItem(THEME_KEY);
+        } catch (e) {
+            return null;
+        }
+    })();
+    applyTheme(saved === 'nox' ? 'nox' : 'light');
+    if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+}
+
+// =============================================
+// SPRITES
+// =============================================
+const SPRITES = {
+    idle: 'assets/front.png',
+    back: 'assets/back.png',
+    walkRight1: 'assets/walking.png',
+    walkRight2: 'assets/right_facing.png',
+    // Use the same right-facing sprite for left movement and mirror it via CSS.
+    walkLeft1: 'assets/walking.png',
+    walkLeft2: 'assets/right_facing.png',
+    jumpLeft: 'assets/left jump.png',
+    // Use the right-facing stop sprite for the mirrored left stop.
+    stopLeft: 'assets/right_facing.png',
+    stopRight: 'assets/right_facing.png',
+    loading: 'assets/loading.png',
+    door: 'assets/door.png',
+    corridor: 'assets/corridor.png'
+};
+
+// Preload all sprites and remove white backgrounds via canvas
+const spriteCache = {};
+const processedSprites = {}; // stores data URLs with white removed
+
+function removeWhiteBackground(img) {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    const isJumpSprite = img.src.includes('jump');
+
+    for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+            const i = (y * canvas.width + x) * 4;
+            const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
+
+            if (a === 0) continue;
+
+            // Specifically for the jump sprite: the drawn grey shadow is at the bottom of the image.
+            // Since she's jumping, her feet are higher up. We can just erase the bottom 40 pixels!
+            if (isJumpSprite && y > canvas.height - 40) {
+                data[i + 3] = 0;
+                continue;
+            }
+
+            // Safe, conservative white removal (protects skin/hair/leggings).
+            // Only strip fully pure white, and only lightly fade values that are very close to white.
+            // This avoids removing light-colored pixels like highlights that are part of the sprite.
+            if (r === 255 && g === 255 && b === 255) {
+                data[i + 3] = 0;
+            } else if (r >= 252 && g >= 252 && b >= 252) {
+                data[i + 3] =0;
+            }
+        }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    return canvas.toDataURL('image/png');
+}
+
+function preloadSprites() {
+    return new Promise((resolve) => {
+        // Only preload character sprites (not loading image)
+        const entries = Object.entries(SPRITES).filter(([k]) => k !== 'loading');
+        const uniquePaths = [...new Set(entries.map(([, v]) => v))];
+        let loaded = 0;
+        uniquePaths.forEach(src => {
+            const img = new Image();
+            img.onload = () => {
+                spriteCache[src] = img;
+                // Process white background removal
+                processedSprites[src] = removeWhiteBackground(img);
+                loaded++;
+                updateLoadingProgress(Math.round((loaded / uniquePaths.length) * 100));
+                if (loaded === uniquePaths.length) resolve();
+            };
+            img.onerror = () => {
+                loaded++;
+                updateLoadingProgress(Math.round((loaded / uniquePaths.length) * 100));
+                if (loaded === uniquePaths.length) resolve();
+            };
+            img.src = src;
+        });
+    });
+}
+
+let currentSpriteSrc = '';
+function setCharacterSprite(src) {
+    if (currentSpriteSrc === src) return;
+    currentSpriteSrc = src;
+    // Use processed (white-removed) version if available
+    charEl.src = processedSprites[src] || src;
+}
+
+// =============================================
+// LOADING SCREEN
+// =============================================
+function updateLoadingProgress(pct) {
+    progressFill.style.width = pct + '%';
+    progressText.textContent = pct + '%';
+}
+
+async function runLoadingScreen() {
+    // Animate loading phrases
+    const phrases = [
+        'Summoning house elves...',
+        'Polishing wands...',
+        'Brewing potions...',
+        'Consulting the Marauder\'s Map...'
+    ];
+    let phraseIdx = 0;
+    const subtitle = document.querySelector('.loading-subtitle');
+    const phraseInterval = setInterval(() => {
+        if (phraseIdx < phrases.length) {
+            subtitle.textContent = phrases[phraseIdx++];
+        }
+    }, 600);
+
+    await preloadSprites();
+    clearInterval(phraseInterval);
+    subtitle.textContent = 'Come in and find out what I\'ve been up to!';
+
+    // Show enter button
+    enterBtn.classList.remove('hidden');
+}
+
+enterBtn.addEventListener('click', () => {
+    loadingScreen.classList.add('fade-out');
+    setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        startGame();
+    }, 800);
+});
+
+// =============================================
+// SCENE SETUP
+// =============================================
+function viewportSize() {
+    return { w: window.innerWidth, h: window.innerHeight };
+}
+
+function getGroundY() {
+    if (scene === 'outside') return worldH - CONFIG.physics.groundOffsetOutside;
+    return worldH - CONFIG.physics.groundOffsetInside;
+}
+
+function setupScene(sceneName) {
+    scene = sceneName;
+    const { w, h } = viewportSize();
+
+    // Clear existing world decorations
+    worldEl.querySelectorAll('.hotspot-marker, .door-marker, .ground-outside, .ground-inside, .torch, .castle-decor').forEach(el => el.remove());
+
+    if (sceneName === 'outside') {
+        worldW = Math.max(w, h * 1.77); // Ensure it fills the screen width at minimum
+        worldH = h;
+        bgEl.className = 'scene-outside';
+        applyTheme(themeMode);
+        bgEl.style.width = worldW + 'px';
+        bgEl.style.height = worldH + 'px';
+        worldEl.style.width = worldW + 'px';
+        worldEl.style.height = worldH + 'px';
+
+        // Add ground
+        const ground = document.createElement('div');
+        ground.className = 'ground-outside';
+        worldEl.appendChild(ground);
+
+        // Add door hotspot over the background illustration
+        // In the provided image, the door is perfectly centered
+        const doorX = (50 / 100) * worldW;
+        const door = document.createElement('div');
+        door.className = 'door-marker';
+        door.style.left = doorX + 'px';
+        door.style.width = '300px';
+        // door rests exactly on the ground
+        door.style.bottom = CONFIG.physics.groundOffsetOutside + 'px';
+        worldEl.appendChild(door);
+
+        // Add castle decorations
+        addOutsideDecorations();
+
+        // Hide back button
+        backButton.classList.add('hidden');
+
+        // Spawn character
+        charX = (CONFIG.character.spawnOutside.xPct / 100) * worldW;
+        charY = getGroundY();
+
+    } else if (sceneName === 'inside') {
+        // For the inside scene we want plenty of horizontal space so the character can walk far right.
+        // Use the same logic as the resize handler (based on viewport width) to avoid being limited by height.
+        const { w } = viewportSize();
+        worldW = Math.max(w * CONFIG.inside.widthMultiplier, 2130);
+        worldH = h;
+        bgEl.className = 'scene-inside';
+        applyTheme(themeMode);
+        bgEl.style.width = worldW + 'px';
+        bgEl.style.height = worldH + 'px';
+        worldEl.style.width = worldW + 'px';
+        worldEl.style.height = worldH + 'px';
+
+        // Add floor
+        const floor = document.createElement('div');
+        floor.className = 'ground-inside';
+        worldEl.appendChild(floor);
+
+        // Add torches
+        addInsideDecorations();
+
+        // Add hotspot markers
+        CONFIG.inside.hotspots.forEach(hs => {
+            const marker = document.createElement('div');
+            marker.className = 'hotspot-marker';
+            marker.dataset.id = hs.id;
+            const hsX = (hs.xPct / 100) * worldW;
+            marker.style.left = hsX + 'px';
+            marker.style.bottom = (CONFIG.physics.groundOffsetInside + 20) + 'px';
+            marker.style.transform = 'translateX(-50%)';
+            marker.innerHTML = `
+        <span class="hotspot-icon">${hs.icon}</span>
+        <span class="hotspot-label">${hs.label}</span>
+      `;
+            worldEl.appendChild(marker);
+        });
+
+        // Show back button
+        backButton.classList.remove('hidden');
+
+        // Spawn character
+        charX = (CONFIG.character.spawnInside.xPct / 100) * worldW;
+        charY = getGroundY();
+    }
+
+    vy = 0;
+    onGround = true;
+    lastFacing = 1;
+    charEl.style.setProperty('--facing', '1');
+    setCharacterSprite(SPRITES.idle);
+    placeCharacter();
+    centerCamera();
+}
+
+function addOutsideDecorations() {
+    // Intentionally empty. User requested to remove all emoji icons from the homepage.
+}
+
+function addInsideDecorations() {
+    // Torches along the walls
+    const torchPositions = [8, 18, 35, 55, 75, 92];
+    torchPositions.forEach(pct => {
+        const torch = document.createElement('div');
+        torch.className = 'torch';
+        torch.textContent = '🔥';
+        torch.style.left = (pct / 100 * worldW) + 'px';
+        torch.style.top = '20%';
+        torch.style.animationDelay = (Math.random() * 2) + 's';
+        worldEl.appendChild(torch);
+    });
+
+    // Wall decorations
+    const wallDecos = [
+        { emoji: '🖼️', x: 12, top: '25%', size: 40 },
+        { emoji: '🪄', x: 30, top: '22%', size: 32 },
+        { emoji: '📖', x: 45, top: '28%', size: 28 },
+        { emoji: '🧹', x: 62, top: '24%', size: 32 },
+        { emoji: '🦁', x: 80, top: '20%', size: 36 },
+        { emoji: '⚗️', x: 88, top: '26%', size: 30 },
+        { emoji: '🪑', x: 15, bottom: '70px', size: 28 },
+        { emoji: '🪑', x: 60, bottom: '70px', size: 28 },
+    ];
+
+    wallDecos.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'castle-decor';
+        el.style.position = 'absolute';
+        el.style.fontSize = d.size + 'px';
+        el.style.left = (d.x / 100 * worldW) + 'px';
+        if (d.top) el.style.top = d.top;
+        if (d.bottom) el.style.bottom = d.bottom;
+        el.style.zIndex = '1';
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.5';
+        el.textContent = d.emoji;
+        worldEl.appendChild(el);
+    });
+}
+
+// =============================================
+// CHARACTER PLACEMENT & CAMERA
+// =============================================
+function placeCharacter() {
+    charEl.style.left = charX + 'px';
+    charEl.style.top = charY + 'px';
+}
+
+function centerCamera() {
+    const { w, h } = viewportSize();
+    const targetX = clamp(charX - w / 2, 0, Math.max(0, worldW - w));
+    cameraX = targetX;
+    worldEl.style.transform = `translateX(${-cameraX}px)`;
+}
+
+function smoothCamera(dt) {
+    const { w } = viewportSize();
+    const targetX = clamp(charX - w / 2, 0, Math.max(0, worldW - w));
+    cameraX = lerp(cameraX, targetX, Math.min(1, dt * 5));
+    worldEl.style.transform = `translateX(${-cameraX}px)`;
+}
+
+// =============================================
+// UTILITIES
+// =============================================
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+function dist(ax, ay, bx, by) { return Math.hypot(ax - bx, ay - by); }
+function show(el) { if (el) el.classList.remove('hidden'); }
+function hide(el) { if (el) el.classList.add('hidden'); }
+
+// =============================================
+// INPUT
+// =============================================
+const touchState = { left: false, right: false, up: false };
+let touchJumpTriggered = false;
+
+window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    if (['a', 'arrowleft', 'd', 'arrowright', 'w', 'arrowup', ' ', 'enter', 'e'].includes(key)) {
+        e.preventDefault();
+        keys.add(key);
+        resetIdleChatTimer();
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    const key = e.key.toLowerCase();
+    keys.delete(key);
+});
+
+function isLeft() { return keys.has('a') || keys.has('arrowleft') || touchState.left; }
+function isRight() { return keys.has('d') || keys.has('arrowright') || touchState.right; }
+function isJump() { return keys.has('w') || keys.has('arrowup') || keys.has(' ') || touchState.up; }
+function isAction() { return keys.has('enter') || keys.has('e'); }
+
+// =============================================
+// TOUCH CONTROLS
+// =============================================
+function setupTouchControls() {
+    if (!('ontouchstart' in window)) return;
+    show(touchControlsEl);
+
+    touchControlsEl.querySelectorAll('.touch-btn').forEach(btn => {
+        const key = btn.dataset.key;
+
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            touchState[key] = true;
+            btn.classList.add('active');
+            if (key === 'up' && onGround && !touchJumpTriggered) {
+                vy = -CONFIG.character.jumpSpeed;
+                onGround = false;
+                touchJumpTriggered = true;
+            }
+        }, { passive: false });
+
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            touchState[key] = false;
+            btn.classList.remove('active');
+            if (key === 'up') touchJumpTriggered = false;
+        });
+
+        btn.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            touchState[key] = false;
+            btn.classList.remove('active');
+            if (key === 'up') touchJumpTriggered = false;
+        });
+
+        btn.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+}
+
+// =============================================
+// SCENE TRANSITIONS
+// =============================================
+function fadeOutIn(callback) {
+    if (sceneTransitioning) return;
+    sceneTransitioning = true;
+    show(fadeEl);
+
+    requestAnimationFrame(() => {
+        fadeEl.classList.add('show');
+
+        const doTransition = async () => {
+            if (callback) await callback();
+
+            requestAnimationFrame(() => {
+                fadeEl.classList.remove('show');
+
+                // Rely on timeout purely instead of transitionend for game state stability
+                setTimeout(() => {
+                    hide(fadeEl);
+                    sceneTransitioning = false;
+                }, 450); // 400ms CSS transition + 50ms buffer
+            });
+        };
+
+        // Rely on timeout for the fade-in half too
+        setTimeout(doTransition, 450);
+    });
+}
+
+function enterHouse() {
+    playEnterAnimation(() => {
+        fadeOutIn(() => {
+            setupScene('inside');
+            showChat('Welcome to the Common Room! Explore to find my portfolio...');
+        });
+    });
+}
+
+function exitHouse() {
+    fadeOutIn(() => {
+        setupScene('outside');
+        showChat('I see you coming back. Want to take another look around?');
+    });
+}
+
+// =============================================
+// INTERACTIONS
+// =============================================
+function showChat(text, duration = 3000) {
+    chatEl.textContent = text;
+    show(chatEl);
+    positionChatAboveCharacter();
+
+    if (chatTimerId) clearTimeout(chatTimerId);
+    chatTimerId = setTimeout(() => {
+        hide(chatEl);
+        chatTimerId = null;
+    }, duration);
+}
+
+function resetIdleChatTimer() {
+    if (idleChatTimerId) clearTimeout(idleChatTimerId);
+    // Only start when game is running and not in a transition/overlay
+    if (overlayOpen || sceneTransitioning) return;
+
+    idleChatTimerId = setTimeout(() => {
+        const line = IDLE_CHAT_LINES[Math.floor(Math.random() * IDLE_CHAT_LINES.length)];
+        showChat(line, 2500);
+        resetIdleChatTimer();
+    }, 10000);
+}
+
+function positionChatAboveCharacter() {
+    const { w } = viewportSize();
+    const screenX = charX - cameraX;
+    const screenY = charY - CONFIG.character.height - 120;
+    chatEl.style.left = (screenX - chatEl.offsetWidth / 2-10) + 'px';
+    chatEl.style.top = screenY + 'px';
+}
+
+// Vertical offset for the interact prompt (higher = more negative)
+const INTERACT_BUTTON_VERTICAL_OFFSET = 140;
+
+function positionInteractButton(worldX, worldY) {
+    const screenX = worldX - cameraX;
+    const screenY = worldY;
+    interactBtn.style.left = (screenX - interactBtn.offsetWidth / 2) + 'px';
+    interactBtn.style.top = (screenY - INTERACT_BUTTON_VERTICAL_OFFSET) + 'px';
+}
+
+function openOverlay(id) {
+    const overlay = document.getElementById('overlay-' + id);
+    if (!overlay) return;
+    overlayOpen = true;
+    show(overlay);
+}
+
+function closeOverlay(id) {
+    const overlay = document.getElementById('overlay-' + id);
+    if (!overlay) return;
+    hide(overlay);
+    overlayOpen = false;
+    canInteract = false;
+    currentInteraction = null;
+    // Consume key so it doesn't re-trigger
+    keys.delete('enter');
+    keys.delete('e');
+
+    resetIdleChatTimer();
+}
+
+// Close overlay on backdrop/close button click
+document.querySelectorAll('.overlay-backdrop, .overlay-close').forEach(el => {
+    el.addEventListener('click', () => {
+        const closeId = el.dataset.close;
+        if (closeId) closeOverlay(closeId);
+    });
+});
+
+// Interact button click
+interactBtn.addEventListener('click', () => {
+    if (currentInteraction === 'door') {
+        enterHouse();
+    } else if (currentInteraction === 'exit') {
+        exitHouse();
+    } else if (currentInteraction) {
+        openOverlay(currentInteraction);
+    }
+});
+
+// Back button
+backButton.addEventListener('click', () => {
+    if (!overlayOpen && !sceneTransitioning) exitHouse();
+});
+
+// =============================================
+// GAME LOOP
+// =============================================
+function tick(timestamp) {
+    if (!lastTime) { lastTime = timestamp; requestAnimationFrame(tick); return; }
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+    lastTime = timestamp;
+
+    // Pause normal movement/sprite updates during the enter animation
+    if (!overlayOpen && !sceneTransitioning && !enterAnimRunning) {
+        updatePhysics(dt);
+        updateCharacterSprite(dt);
+        updateInteractions();
+    }
+
+    smoothCamera(dt);
+    updateSpotlight();
+
+    // Keep chat following character
+    if (!chatEl.classList.contains('hidden')) {
+        positionChatAboveCharacter();
+    }
+
+    requestAnimationFrame(tick);
+}
+
+function updatePhysics(dt) {
+    const speed = CONFIG.character.speed;
+    let moving = false;
+
+    // Horizontal movement
+    if (isLeft()) {
+        charX -= speed * dt;
+        lastFacing = -1;
+        moving = true;
+    } else if (isRight()) {
+        charX += speed * dt;
+        lastFacing = 1;
+        moving = true;
+    }
+
+    isMoving = moving;
+
+    // Show instructions on first move
+    if (moving && !hasStartedMoving) {
+        hasStartedMoving = true;
+        hide(instructionsEl);
+    }
+
+    // Jump
+    if (isJump() && onGround) {
+        vy = -CONFIG.character.jumpSpeed;
+        onGround = false;
+    }
+
+    // Gravity
+    vy += CONFIG.physics.gravity * dt;
+    charY += vy * dt;
+
+    // Ground collision
+    const groundY = getGroundY();
+    if (charY >= groundY) {
+        charY = groundY;
+        vy = 0;
+        onGround = true;
+    }
+
+    // Clamp to constructed bounds (allows tuning movement range independent of world width)
+    const sceneBounds = CONFIG.bounds && CONFIG.bounds[scene];
+    if (sceneBounds) {
+        const minX = (sceneBounds.minPct / 100) * worldW;
+        const maxX = (sceneBounds.maxPct / 100) * worldW;
+        charX = clamp(charX, minX, maxX);
+    } else {
+        charX = clamp(charX, CONFIG.character.width / 2, worldW - CONFIG.character.width / 2);
+    }
+
+    // Apply facing — only flip for jump-right (since we have dedicated left/right sprites)
+    // For all other sprites, --facing stays 1 (no flip) because each direction has its own art
+    placeCharacter();
+}
+
+function playEnterAnimation(callback) {
+    if (enterAnimRunning) return;
+    enterAnimRunning = true;
+
+    const origX = charX;
+    const origY = charY;
+
+    // Determine a short walk path toward the door (left/up)
+    const targetY = Math.max(0, charY - 50);
+    const targetX = Math.max(CONFIG.character.width / 2, charX - 40);
+
+    // Turn back (face left/back) immediately
+    lastFacing = -1;
+    setCharacterSprite(SPRITES.back || SPRITES.idle);
+
+    const duration = 500;
+    const turnDuration = 120;
+    const walkDuration = duration - turnDuration;
+
+    let start = null;
+
+    function step(timestamp) {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+
+        if (elapsed < turnDuration) {
+            // still “turning back” — hold the back sprite
+            requestAnimationFrame(step);
+            return;
+        }
+
+        const walkElapsed = elapsed - turnDuration;
+        const t = Math.min(1, walkElapsed / walkDuration);
+
+        charY = origY + (targetY - origY) * t;
+        charX = origX + (targetX - origX) * t;
+        placeCharacter();
+
+        if (t < 1) {
+            requestAnimationFrame(step);
+            return;
+        }
+
+        // Finished walking; keep the back view briefly then continue
+        setTimeout(() => {
+            enterAnimRunning = false;
+            if (typeof callback === 'function') callback();
+        }, 150);
+    }
+
+    requestAnimationFrame(step);
+}
+
+function updateCharacterSprite(dt) {
+    // Toggle jumping class for CSS (e.g. shadow removal)
+    charEl.classList.toggle('jumping', !onGround);
+
+    if (!onGround) {
+        // Jumping — use the side-profile jump sprite and mirror for left-facing movement.
+        setCharacterSprite(SPRITES.jumpLeft);
+        charEl.style.setProperty('--facing', lastFacing);
+    } else if (isMoving) {
+        // Walking — alternate stride/still sprites, using right-facing art mirrored for left.
+        walkFrameTimer += dt;
+        if (walkFrameTimer >= WALK_FRAME_INTERVAL) {
+            walkFrame = (walkFrame + 1) % 2;
+            walkFrameTimer = 0;
+        }
+
+        const sprite = walkFrame === 0 ? SPRITES.walkRight1 : SPRITES.walkRight2;
+        setCharacterSprite(sprite);
+        charEl.style.setProperty('--facing', lastFacing);
+    } else {
+        // Idle — always show the front-facing sprite when not moving.
+        setCharacterSprite(SPRITES.idle);
+        charEl.style.setProperty('--facing', '1');
+        walkFrameTimer = 0;
+        walkFrame = 0;
+    }
+}
+
+function updateInteractions() {
+    canInteract = false;
+    currentInteraction = null;
+
+    if (scene === 'outside') {
+        // Check door proximity over the painted center door
+        const doorX = (50 / 100) * worldW;
+        const doorDist = Math.abs(charX - doorX);
+
+        if (doorDist < CONFIG.outside.door.radius) {
+            canInteract = true;
+            currentInteraction = 'door';
+            show(interactBtn);
+            interactBtn.textContent = 'Enter Castle ⏎';
+            positionInteractButton(doorX, getGroundY() - CONFIG.character.height);
+        }
+    } else if (scene === 'inside') {
+        // Check exit proximity
+        const exitX = (CONFIG.inside.exit.xPct / 100) * worldW;
+        const exitDist = Math.abs(charX - exitX);
+
+        if (exitDist < CONFIG.inside.exit.radius) {
+            canInteract = true;
+            currentInteraction = 'exit';
+            show(interactBtn);
+            interactBtn.textContent = '⬅ Exit Castle ⏎';
+            positionInteractButton(exitX + 60, getGroundY() - CONFIG.character.height);
+        }
+
+        // Check hotspot proximity
+        CONFIG.inside.hotspots.forEach(hs => {
+            const hsX = (hs.xPct / 100) * worldW;
+            const hsDist = Math.abs(charX - hsX);
+
+            // Update marker glow state
+            const marker = worldEl.querySelector(`.hotspot-marker[data-id="${hs.id}"]`);
+            if (marker) {
+                if (hsDist < CONFIG.inside.hotspotRadius) {
+                    marker.classList.add('near');
+                } else {
+                    marker.classList.remove('near');
+                }
+            }
+
+            if (hsDist < CONFIG.inside.hotspotRadius && !canInteract) {
+                canInteract = true;
+                currentInteraction = hs.id;
+                show(interactBtn);
+                interactBtn.textContent = `${hs.icon} ${hs.label} ⏎`;
+                positionInteractButton(hsX, getGroundY() - CONFIG.character.height);
+            }
+        });
+    }
+
+    // Hide interact button if nothing nearby
+    if (!canInteract) {
+        hide(interactBtn);
+    }
+
+    // Handle action key
+    if (isAction() && canInteract && !overlayOpen) {
+        keys.delete('enter');
+        keys.delete('e');
+        if (currentInteraction === 'door') {
+            enterHouse();
+        } else if (currentInteraction === 'exit') {
+            exitHouse();
+        } else {
+            openOverlay(currentInteraction);
+        }
+    }
+}
+
+// =============================================
+// SPOTLIGHT
+// =============================================
+function updateSpotlight() {
+    if (!spotlightEl) return;
+    const screenX = charX - cameraX;
+    const screenY = charY - CONFIG.character.height / 2;
+    spotlightEl.style.setProperty('--spotlight-x', screenX + 'px');
+    spotlightEl.style.setProperty('--spotlight-y', screenY + 'px');
+}
+
+function enableSpotlight() {
+    spotlightEl.classList.add('active', 'spotlight');
+}
+
+// =============================================
+// START GAME
+// =============================================
+function startGame() {
+    show(gameEl);
+    setupScene('outside');
+    initTheme();
+    setupTouchControls();
+    enableSpotlight();
+
+    // Show instructions
+    show(instructionsEl);
+
+    // Welcome chat
+    setTimeout(() => {
+        showChat('Welcome to Susan Ho \'s Personal Space! Use arrow keys to explore.');
+        resetIdleChatTimer();
+    }, 500);
+
+    // Start game loop
+    requestAnimationFrame(tick);
+}
+
+// =============================================
+// RESIZE HANDLING
+// =============================================
+window.addEventListener('resize', () => {
+    if (gameEl.classList.contains('hidden')) return;
+    const { w, h } = viewportSize();
+
+    // Recalculate world size
+    if (scene === 'outside') {
+        worldW = Math.max(w * CONFIG.outside.widthMultiplier, 1600);
+    } else {
+        worldW = Math.max(w * CONFIG.inside.widthMultiplier, 3000);
+    }
+    worldH = h;
+
+    bgEl.style.width = worldW + 'px';
+    bgEl.style.height = worldH + 'px';
+    worldEl.style.width = worldW + 'px';
+    worldEl.style.height = worldH + 'px';
+
+    // Re-ground character
+    const groundY = getGroundY();
+    if (onGround) charY = groundY;
+
+    // Clamp within bounds (if configured), otherwise use full world bounds
+    const sceneBounds = CONFIG.bounds && CONFIG.bounds[scene];
+    if (sceneBounds) {
+        const minX = (sceneBounds.minPct / 100) * worldW;
+        const maxX = (sceneBounds.maxPct / 100) * worldW;
+        charX = clamp(charX, minX, maxX);
+    } else {
+        charX = clamp(charX, CONFIG.character.width / 2, worldW - CONFIG.character.width / 2);
+    }
+
+    placeCharacter();
+    centerCamera();
+});
+
+// =============================================
+// KEYBOARD SHORTCUT: ESC to close overlays
+// =============================================
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlayOpen) {
+        // Find open overlay and close it
+        document.querySelectorAll('.overlay:not(.hidden)').forEach(ol => {
+            const backdrop = ol.querySelector('.overlay-backdrop');
+            const closeId = backdrop?.dataset.close;
+            if (closeId) closeOverlay(closeId);
+        });
+    }
+});
+
+// =============================================
+// INIT
+// =============================================
+runLoadingScreen();
