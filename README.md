@@ -2,7 +2,9 @@
 
 > A Hogwarts-themed, browser-based 2D portfolio experience. Walk around the castle grounds, step inside the Common Room, and discover my skills, experience, and projects through interactive hotspots.
 
-**Live Demo:** [github.com/shuxianho07/welcome-to-hogwarts](https://github.com/shuxianho07/welcome-to-hogwarts)
+**🌐 Live Demo:** [welcome-to-hogwarts.vercel.app](https://welcome-to-hogwarts.vercel.app)
+
+[![Deploy Status](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)](https://welcome-to-hogwarts.vercel.app)
 
 ---
 
