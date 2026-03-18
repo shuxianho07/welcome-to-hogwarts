@@ -281,6 +281,8 @@ enterBtn.addEventListener('click', () => {
     setTimeout(() => {
         loadingScreen.style.display = 'none';
         startGame();
+        // Grab keyboard focus so WASD/arrow keys work immediately
+        gameEl.focus();
     }, 800);
 });
 
@@ -642,6 +644,8 @@ function closeOverlay(id) {
     keys.delete('enter');
     keys.delete('e');
 
+    // Re-grab keyboard focus after overlay closes
+    gameEl.focus();
     resetIdleChatTimer();
 }
 
@@ -930,12 +934,20 @@ function startGame() {
     setupTouchControls();
     enableSpotlight();
 
+    // Make game div focusable and grab focus so keys work on deployed sites
+    gameEl.setAttribute('tabindex', '0');
+    gameEl.style.outline = 'none';
+    gameEl.focus();
+
+    // Re-grab focus any time the user clicks inside the game
+    gameEl.addEventListener('click', () => gameEl.focus());
+
     // Show instructions
     show(instructionsEl);
 
     // Welcome chat
     setTimeout(() => {
-        showChat('Welcome to Susan Ho \'s Personal Space! Use arrow keys to explore.');
+        showChat('Welcome to Susan Ho\'s Personal Space! Use arrow keys to explore.');
         resetIdleChatTimer();
     }, 500);
 
