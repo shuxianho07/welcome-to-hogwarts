@@ -33,10 +33,24 @@ const CONFIG = {
         widthMultiplier: 1.3,
         exit: { xPct: 75, radius: 120 },
         hotspots: [
-            { id: 'skills', icon: '📜', label: 'Skills & Spells', xPct: 25 },
-            { id: 'experience', icon: '📋', label: 'Work Experience', xPct: 50 },
-            { id: 'projects', icon: '📚', label: 'Project Archives', xPct: 70 },
-            { id: 'about', icon: '✨', label: 'About Me', xPct: 90 }
+            // bgImg* = pixel coords in corridor.jpg (1600×475).
+            // World position is derived at runtime: worldPos = bgImg* × (worldH / 475).
+            { id: 'skills',
+              label: 'Skills & Spells',
+              iconSrc: 'assets/icons/skills.png',
+              bgImgX: 282, bgImgY: 52, bgImgW: 70,  bgImgH: 120 }, // Positioned over the white wall sconce
+            { id: 'experience',
+              label: 'Work Experience',
+              iconSrc: 'assets/icons/experience.png',
+              bgImgX: 429, bgImgY: 100, bgImgW: 195, bgImgH: 305 }, // Exact size of center-left frame
+            { id: 'projects',
+              label: 'Project Archives',
+              iconSrc: 'assets/icons/projects.png',
+              bgImgX: 1114, bgImgY: 168, bgImgW: 120, bgImgH: 288 }, // Exact size of right narrow frame
+            { id: 'about',
+              label: 'About Me',
+              iconSrc: 'assets/icons/about.png',
+              bgImgX: 850, bgImgY: 290, bgImgW: 120,  bgImgH: 150 } // Sitting on wainscoting ledge (y=440)
         ],
         hotspotRadius: 100
     },
@@ -56,6 +70,7 @@ let scene = 'outside';
 let keys = new Set();
 let lastTime = 0;
 let worldW = 0, worldH = 0;
+let corridorScale = 1; // worldH / 475 — converts corridor.jpg px → world px
 let charX = 0, charY = 0;
 let cameraX = 0;
 let vx = 0;
@@ -303,7 +318,7 @@ function setupScene(sceneName) {
     const { w, h } = viewportSize();
 
     // Clear existing world decorations
-    worldEl.querySelectorAll('.hotspot-marker, .door-marker, .ground-outside, .ground-inside, .torch, .castle-decor').forEach(el => el.remove());
+    worldEl.querySelectorAll('.hotspot-marker, .door-marker, .ground-outside, .ground-inside, .torch, .castle-decor, .greeting-text, .instruction-text').forEach(el => el.remove());
 
     if (sceneName === 'outside') {
         worldW = Math.max(w, h * 1.77); // Ensure it fills the screen width at minimum
@@ -342,11 +357,13 @@ function setupScene(sceneName) {
         charY = getGroundY();
 
     } else if (sceneName === 'inside') {
-        // For the inside scene we want plenty of horizontal space so the character can walk far right.
-        // Use the same logic as the resize handler (based on viewport width) to avoid being limited by height.
-        const { w } = viewportSize();
-        worldW = Math.max(w * CONFIG.inside.widthMultiplier, 2130);
+        const { h } = viewportSize();
         worldH = h;
+        corridorScale = worldH / 475;
+        // Set the world width strictly to the width of the scaled corridor background
+        // The background image is 1600px wide naturally
+        worldW = Math.max(1600 * corridorScale, window.innerWidth);
+        
         bgEl.className = 'scene-inside';
         applyTheme(themeMode);
         bgEl.style.width = worldW + 'px';
@@ -363,16 +380,29 @@ function setupScene(sceneName) {
         addInsideDecorations();
 
         // Add hotspot markers
+        corridorScale = worldH / 475;
+
         CONFIG.inside.hotspots.forEach(hs => {
             const marker = document.createElement('div');
             marker.className = 'hotspot-marker';
             marker.dataset.id = hs.id;
-            const hsX = (hs.xPct / 100) * worldW;
-            marker.style.left = hsX + 'px';
-            marker.style.bottom = (CONFIG.physics.groundOffsetInside + 20) + 'px';
-            marker.style.transform = 'translateX(-50%)';
+
+            // Place marker exactly over the corridor.jpg background item
+            const hsWorldX = hs.bgImgX * corridorScale;
+            const hsWorldY = hs.bgImgY * corridorScale;
+            const iconW     = hs.bgImgW * corridorScale;
+            const iconH     = hs.bgImgH * corridorScale;
+
+            marker.style.left      = hsWorldX + 'px';
+            marker.style.top       = hsWorldY + 'px';
+            marker.style.transform = 'none'; // no centering — top-left anchored to item position
+
+            // Icon sized to match the background item
+            const iconHtml = hs.iconSrc
+                ? `<img class="hotspot-icon-img" src="${hs.iconSrc}" alt="${hs.label}" style="width:${iconW}px;height:${iconH}px;">`
+                : '';
             marker.innerHTML = `
-        <span class="hotspot-icon">${hs.icon}</span>
+        ${iconHtml}
         <span class="hotspot-label">${hs.label}</span>
       `;
             worldEl.appendChild(marker);
@@ -391,53 +421,34 @@ function setupScene(sceneName) {
     lastFacing = 1;
     charEl.style.setProperty('--facing', '1');
     setCharacterSprite(SPRITES.idle);
+
+    // Half-body mode for the corridor scene
+    if (sceneName === 'inside') {
+        charEl.classList.add('half-body');
+    } else {
+        charEl.classList.remove('half-body');
+    }
+
     placeCharacter();
     centerCamera();
 }
 
 function addOutsideDecorations() {
-    // Intentionally empty. User requested to remove all emoji icons from the homepage.
+    // Fiona Fang style greeting title
+    const greeting = document.createElement('div');
+    greeting.className = 'greeting-text';
+    greeting.innerHTML = `I'm <span class="highlight">Shuxian</span>,<br>Come in ➔`;
+    worldEl.appendChild(greeting);
+
+    // Instructional text at the bottom
+    const instruction = document.createElement('div');
+    instruction.className = 'instruction-text';
+    instruction.innerHTML = `Use arrow or WASD keys to move & press E to interact ✨`;
+    worldEl.appendChild(instruction);
 }
 
 function addInsideDecorations() {
-    // Torches along the walls
-    const torchPositions = [8, 18, 35, 55, 75, 92];
-    torchPositions.forEach(pct => {
-        const torch = document.createElement('div');
-        torch.className = 'torch';
-        torch.textContent = '🔥';
-        torch.style.left = (pct / 100 * worldW) + 'px';
-        torch.style.top = '20%';
-        torch.style.animationDelay = (Math.random() * 2) + 's';
-        worldEl.appendChild(torch);
-    });
-
-    // Wall decorations
-    const wallDecos = [
-        { emoji: '🖼️', x: 12, top: '25%', size: 40 },
-        { emoji: '🪄', x: 30, top: '22%', size: 32 },
-        { emoji: '📖', x: 45, top: '28%', size: 28 },
-        { emoji: '🧹', x: 62, top: '24%', size: 32 },
-        { emoji: '🦁', x: 80, top: '20%', size: 36 },
-        { emoji: '⚗️', x: 88, top: '26%', size: 30 },
-        { emoji: '🪑', x: 15, bottom: '70px', size: 28 },
-        { emoji: '🪑', x: 60, bottom: '70px', size: 28 },
-    ];
-
-    wallDecos.forEach(d => {
-        const el = document.createElement('div');
-        el.className = 'castle-decor';
-        el.style.position = 'absolute';
-        el.style.fontSize = d.size + 'px';
-        el.style.left = (d.x / 100 * worldW) + 'px';
-        if (d.top) el.style.top = d.top;
-        if (d.bottom) el.style.bottom = d.bottom;
-        el.style.zIndex = '1';
-        el.style.pointerEvents = 'none';
-        el.style.opacity = '0.5';
-        el.textContent = d.emoji;
-        worldEl.appendChild(el);
-    });
+    // Corridor background already has paintings, sconces, and decor — no overlaid emoji needed.
 }
 
 // =============================================
@@ -657,6 +668,15 @@ document.querySelectorAll('.overlay-backdrop, .overlay-close').forEach(el => {
     });
 });
 
+// Open secondary overlays (from inner items like Suitcase icons)
+document.querySelectorAll('[data-open]').forEach(el => {
+    el.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent clicking suitcase items from closing things
+        const openId = el.dataset.open;
+        if (openId) openOverlay(openId);
+    });
+});
+
 // Interact button click
 interactBtn.addEventListener('click', () => {
     if (currentInteraction === 'door') {
@@ -700,7 +720,8 @@ function tick(timestamp) {
 }
 
 function updatePhysics(dt) {
-    const speed = CONFIG.character.speed;
+    // Faster movement inside the corridor for smoother traversal
+    const speed = scene === 'inside' ? 500 : CONFIG.character.speed;
     let moving = false;
 
     // Horizontal movement
@@ -817,20 +838,26 @@ function updateCharacterSprite(dt) {
         setCharacterSprite(SPRITES.jumpLeft);
         charEl.style.setProperty('--facing', lastFacing);
     } else if (isMoving) {
-        // Walking — alternate stride/still sprites, using right-facing art mirrored for left.
+        // Corridor uses a slower frame interval for a gentler animation
+        const interval = scene === 'inside' ? 0.3 : WALK_FRAME_INTERVAL;
         walkFrameTimer += dt;
-        if (walkFrameTimer >= WALK_FRAME_INTERVAL) {
+        if (walkFrameTimer >= interval) {
             walkFrame = (walkFrame + 1) % 2;
             walkFrameTimer = 0;
         }
-
         const sprite = walkFrame === 0 ? SPRITES.walkRight1 : SPRITES.walkRight2;
         setCharacterSprite(sprite);
         charEl.style.setProperty('--facing', lastFacing);
     } else {
-        // Idle — always show the front-facing sprite when not moving.
-        setCharacterSprite(SPRITES.idle);
-        charEl.style.setProperty('--facing', '1');
+        // Idle — in the corridor show a side-facing sprite that mirrors based on
+        // the last movement direction; outside show the front-facing sprite.
+        if (scene === 'inside') {
+            setCharacterSprite(SPRITES.walkRight2); // side-facing pose
+            charEl.style.setProperty('--facing', lastFacing);
+        } else {
+            setCharacterSprite(SPRITES.idle);
+            charEl.style.setProperty('--facing', '1');
+        }
         walkFrameTimer = 0;
         walkFrame = 0;
     }
@@ -867,25 +894,23 @@ function updateInteractions() {
 
         // Check hotspot proximity
         CONFIG.inside.hotspots.forEach(hs => {
-            const hsX = (hs.xPct / 100) * worldW;
+            const hsX    = hs.bgImgX * corridorScale;
             const hsDist = Math.abs(charX - hsX);
 
             // Update marker glow state
             const marker = worldEl.querySelector(`.hotspot-marker[data-id="${hs.id}"]`);
             if (marker) {
-                if (hsDist < CONFIG.inside.hotspotRadius) {
-                    marker.classList.add('near');
-                } else {
-                    marker.classList.remove('near');
-                }
+                marker.classList.toggle('near', hsDist < CONFIG.inside.hotspotRadius);
             }
 
             if (hsDist < CONFIG.inside.hotspotRadius && !canInteract) {
                 canInteract = true;
                 currentInteraction = hs.id;
                 show(interactBtn);
-                interactBtn.textContent = `${hs.icon} ${hs.label} ⏎`;
-                positionInteractButton(hsX, getGroundY() - CONFIG.character.height);
+                interactBtn.textContent = `${hs.label} ⏎`;
+                // Show interact button just below the background item
+                const hsScreenY = hs.bgImgY * corridorScale + hs.bgImgH * corridorScale;
+                positionInteractButton(hsX, hsScreenY);
             }
         });
     }

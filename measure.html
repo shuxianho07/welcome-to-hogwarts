@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0; background:#000;">
+<img src="assets/corridor.jpg" style="position:absolute; top:0; left:0; width:1600px; height:475px; opacity:0.8;">
+<canvas id="c" width="1600" height="475" style="position:absolute; top:0; left:0;"></canvas>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+ctx.strokeStyle = 'rgba(0,255,255,0.5)';
+ctx.fillStyle = 'cyan';
+ctx.font = '10px unifont';
+for(let x=0; x<1600; x+=50) {
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,475); ctx.stroke();
+    ctx.fillText(x, x+2, 10);
+}
+for(let y=0; y<475; y+=50) {
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(1600,y); ctx.stroke();
+    ctx.fillText(y, 2, y+10);
+}
+</script>
+</body>
+</html>

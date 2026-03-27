@@ -1,14 +1,14 @@
-# 🏰 Welcome to Hogwarts — Interactive Portfolio
+#  Welcome to Hogwarts — Interactive Portfolio
 
 > A Hogwarts-themed, browser-based 2D portfolio experience. Walk around the castle grounds, step inside the Common Room, and discover my skills, experience, and projects through interactive hotspots.
 
-**🌐 Live Demo:** [welcome-to-hogwarts.vercel.app](https://welcome-to-hogwarts.vercel.app)
+** Live Demo:** [welcome-to-hogwarts.vercel.app](https://welcome-to-hogwarts.vercel.app)
 
 [![Deploy Status](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)](https://welcome-to-hogwarts.vercel.app)
 
 ---
 
-## ✨ Features
+##  Features
 
 - **2D Side-Scrolling Game Engine** — Custom-built in vanilla JavaScript with physics, gravity, and smooth camera tracking
 - **Animated Character** — Pixel-style sprite with walk cycles, jump animations, and directional flipping
@@ -21,7 +21,7 @@
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 
 ```
 welcome-to-hogwarts/
@@ -42,7 +42,7 @@ welcome-to-hogwarts/
 
 ---
 
-## 🎮 How to Play
+##  How to Play
 
 | Input | Action |
 |---|---|
@@ -58,7 +58,7 @@ welcome-to-hogwarts/
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -72,7 +72,7 @@ The game engine is entirely hand-rolled — no libraries, no bundlers. All sprit
 
 ---
 
-## 🚀 Running Locally
+##  Running Locally
 
 No build step required. Just open the file in a browser:
 
@@ -91,13 +91,13 @@ npx serve .
 
 ---
 
-## 👩‍💻 About Susan
+##  About Susan
 
 **Susan (Shuxian) Ho** is a Data Analyst & Backend Engineer passionate about AI, automation, and building delightful digital experiences.
 
-- 🏛 **City of Markham** — Data Analyst: end-to-end Python automation & executive reporting
-- 🎨 **Adobe** — Data Analyst Intern: Python & SQL telemetry data pipelines
-- 🎓 Studying Computer Science with a focus on data systems, ML, and full-stack development
+-  **City of Markham** — Data Analyst: end-to-end Python automation & executive reporting
+-  **Adobe** — Data Analyst Intern: Python & SQL telemetry data pipelines
+-  Studying Computer Science with a focus on data systems, ML, and full-stack development
 
 **Connect:**
 [![GitHub](https://img.shields.io/badge/GitHub-shuxianho07-181717?logo=github)](https://github.com/shuxianho07)
@@ -105,6 +105,6 @@ npx serve .
 
 ---
 
-## 📄 License
+##  License
 
 This project is open source and available under the [MIT License](LICENSE).

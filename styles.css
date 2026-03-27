@@ -54,6 +54,51 @@ h3 {
 }
 
 /* ========================================
+   GLOBAL NAVIGATION (FIONA FANG STYLE)
+   ======================================== */
+#global-nav {
+    position: fixed;
+    top: 25px;
+    right: 40px;
+    z-index: 1000;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.6rem;
+    pointer-events: auto; /* ensure clickable outside game world */
+}
+
+#global-nav .nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+#global-nav .nav-socials {
+    display: flex;
+    gap: 15px;
+}
+
+#global-nav a {
+    color: var(--gold-bright);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: var(--transition-fast);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+#global-nav a:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 10px var(--gold-glow);
+}
+
+#global-nav i {
+    font-size: 1.5rem;
+}
+
+/* ========================================
    LOADING SCREEN
    ======================================== */
 #loading-screen {
@@ -161,6 +206,20 @@ h3 {
     display: none;
 }
 
+/* Vignette overlay for cozy/mysterious atmosphere */
+#game::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.9),
+                inset 0 0 80px rgba(0,0,0,0.5);
+    z-index: 500;
+}
+
 /* --- WORLD --- */
 #world {
     position: absolute;
@@ -197,6 +256,18 @@ h3 {
     filter: none !important;
 }
 
+/* Half-body mode for the corridor/inside scene — show waist-up only */
+#character.half-body {
+    clip-path: inset(0 0 45% 0);
+    /* Sized so the visible 55% (~358px) reaches roughly mid-page — realistic adult scale */
+    width: 400px;
+    height: 650px;
+    /* -45% pushes the visible portion's bottom right to the screen edge */
+    transform: translate(-50%, -45%) scaleX(var(--facing, 1));
+    /* Smooth the left/right flip so direction changes aren't jarring */
+    transition: transform 0.15s ease;
+}
+
 /* --- SPOTLIGHT --- */
 #spotlight-overlay {
     position: absolute;
@@ -221,6 +292,45 @@ h3 {
             rgba(0, 0, 0, 0.25) 55%,
             rgba(0, 0, 0, 0.32) 70%,
             rgba(0, 0, 0, 0.35) 100%);
+}
+
+/* ========================================
+   FIONA FANG STYLE LANDING PAGE TEXT
+   ======================================== */
+.greeting-text {
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    font-family: 'Caveat', cursive;
+    font-size: 5rem;
+    line-height: 1.1;
+    color: var(--gold-bright);
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8),
+                 0 0 30px var(--gold-glow);
+    transform: rotate(-3deg);
+    pointer-events: none;
+    z-index: 50;
+    animation: float 4s ease-in-out infinite;
+}
+
+.greeting-text .highlight {
+    font-size: 7.5rem;
+    color: #fff;
+    display: block;
+    margin-top: -10px;
+}
+
+.instruction-text {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1px;
+    z-index: 50;
+    pointer-events: none;
 }
 
 /* ========================================
@@ -402,6 +512,17 @@ button.nav-link {
     animation: float 3s ease-in-out infinite;
 }
 
+.hotspot-icon-img {
+    display: block;
+    object-fit: fill; /* stretch to exactly match the background item */
+    border: none;
+    border-radius: 0;
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    opacity: 0.88;
+}
+
 .hotspot-label {
     font-family: 'Cinzel', serif;
     font-size: 13px;
@@ -520,17 +641,41 @@ button.nav-link {
 
 .overlay-panel {
     position: relative;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 16px;
-    padding: 40px;
-    max-width: 620px;
+    background: #f4f1e1; /* Light sketchbook paper */
+    border: 1px solid #dcd5c4;
+    border-radius: 4px; /* Flatter, book-like corners */
+    padding: 40px 50px;
+    max-width: 650px;
     width: 90%;
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
     z-index: 205;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(212, 168, 67, 0.08);
-    animation: slideUp 0.4s ease-out;
+    /* Hand-drawn style drop shadow */
+    box-shadow: 12px 15px 0px rgba(0, 0, 0, 0.4), 
+                0 0 30px rgba(0, 0, 0, 0.8);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Subtle paper texture using CSS gradient: a red margin line and light blue horizontal rules */
+    background-image: 
+        linear-gradient(90deg, transparent 40px, #e8a0a0 40px, #e8a0a0 42px, transparent 42px),
+        linear-gradient(#f4f1e1 1.2em, #eaddc0 1.2em, #eaddc0 1.3em, #f4f1e1 1.3em);
+    background-size: 100% 1.3em;
+}
+
+/* Scrapbook tape effect */
+.overlay-panel::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 120px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    border-left: 2px dashed rgba(0,0,0,0.1);
+    border-right: 2px dashed rgba(0,0,0,0.1);
+    z-index: 210;
+    pointer-events: none;
 }
 
 /* Custom scrollbar for overlays */
@@ -548,18 +693,21 @@ button.nav-link {
 }
 
 .overlay-title {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: clamp(20px, 4vw, 28px);
-    color: var(--gold);
-    margin-bottom: 28px;
-    text-shadow: 0 0 20px rgba(212, 168, 67, 0.2);
+    font-family: 'Caveat', cursive;
+    font-size: clamp(36px, 6vw, 54px);
+    color: #2c2820; /* Dark ink */
+    margin-bottom: 24px;
+    margin-left: 20px; /* Offset to clear the margin line */
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
     letter-spacing: 1px;
+    transform: rotate(-2deg);
 }
 
 .overlay-section {
     margin-bottom: 24px;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin-left: 20px; /* Clear notebook red line */
+    border-bottom: 2px dashed rgba(44, 40, 32, 0.15); /* Ink dash */
 }
 
 .overlay-section:last-child {
@@ -569,28 +717,36 @@ button.nav-link {
 }
 
 .overlay-section h3 {
-    font-size: 16px;
-    color: var(--gold-bright);
-    margin-bottom: 8px;
-    font-weight: 600;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 24px;
+    color: #8c2a2a; /* Red ink for headers */
+    margin-bottom: 4px;
+    font-weight: normal;
 }
 
-.overlay-section p {
-    font-size: 14px;
-    color: var(--text-main);
-    line-height: 1.7;
-    opacity: 0.85;
+.overlay-section p, .overlay-section li {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    color: #2c2820; /* Dark ink */
+    line-height: 1.5;
+    opacity: 0.95;
+}
+
+.overlay-section ul {
+    margin-left: 20px;
+    margin-top: 8px;
 }
 
 .overlay-section a {
-    color: var(--gold);
+    color: #3b5998; /* Blue ink */
     text-decoration: none;
     border-bottom: 1px solid transparent;
-    transition: border-color var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .overlay-section a:hover {
-    border-bottom-color: var(--gold);
+    border-bottom-color: #3b5998;
+    background: rgba(59, 89, 152, 0.1);
 }
 
 /* ========================================
@@ -798,6 +954,188 @@ button.nav-link {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ========================================
+   FIONA FANG SPECIFIC - CORKBOARD
+   ======================================== */
+.container-corkboard {
+    position: relative;
+    width: 650px;
+    max-width: 90vw;
+    height: 450px;
+    background: #d4a373 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="3" fill="rgba(0,0,0,0.05)"/></svg>');
+    border: 15px solid #5c4033; /* Dark wood border */
+    border-radius: 8px; /* sharp corners */
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.4);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.corkboard-title-note {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fdfaf1;
+    padding: 10px 30px;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.3);
+}
+
+.pin {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: #e74c3c;
+    border-radius: 50%;
+    box-shadow: inset -2px -2px 4px rgba(0,0,0,0.4), 2px 2px 5px rgba(0,0,0,0.6);
+}
+
+.pin::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 4px;
+    height: 4px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+}
+
+.cork-note {
+    position: absolute;
+    background: #fdfaf1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 130px;
+}
+
+.cork-note:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 10;
+}
+
+.cork-note .note-label {
+    font-family: 'Patrick Hand', cursive;
+    color: #2c2820;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* ========================================
+   FIONA FANG SPECIFIC - NOTEPAD
+   ======================================== */
+.container-notepad {
+    position: relative;
+    width: 600px;
+    max-width: 90vw;
+    background: transparent;
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+}
+
+.container-notepad .notepad-content {
+    box-shadow: 10px 15px 0px rgba(0,0,0,0.3);
+    margin-left: 20px;
+    width: 100%;
+}
+
+.notepad-binding {
+    position: absolute;
+    left: 0;
+    top: 5%;
+    bottom: 5%;
+    width: 45px;
+    background: #a93226; /* Dark red binding tape */
+    border-radius: 6px 0 0 6px;
+    box-shadow: inset -5px 0 10px rgba(0,0,0,0.4), 4px 0 5px rgba(0,0,0,0.2);
+    z-index: 210;
+}
+
+.spiral {
+    position: absolute;
+    left: 10px;
+    width: 25px;
+    height: 12px;
+    background: #111;
+    border-radius: 6px;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+/* ========================================
+   FIONA FANG SPECIFIC - BOOKSHELF
+   ======================================== */
+.container-bookshelf {
+    position: relative;
+    width: 600px;
+    max-width: 90vw;
+    height: 400px;
+    background: #3e2617; /* Dark library wood */
+    border: 15px solid #231107;
+    border-radius: 8px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.8);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.bookshelf-shelf {
+    position: absolute;
+    bottom: 40px;
+    left: 5%;
+    right: 5%;
+    height: 25px;
+    background: #543622;
+    border-bottom: 5px solid #231107;
+    box-shadow: 0 15px 20px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: flex-end;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.book-spine {
+    width: 55px;
+    border-radius: 5px 5px 0 0;
+    box-shadow: inset -5px 0 10px rgba(0,0,0,0.4), 2px 0 5px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* Extra book spine detailing */
+    border-left: 2px solid rgba(255,255,255,0.1);
+    border-right: 2px solid rgba(0,0,0,0.3);
+}
+
+.book-spine:hover {
+    transform: translateY(-15px) !important;
+    z-index: 10;
+}
+
+.book-spine span {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: #fdfaf1;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    transform: rotate(180deg);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
 /* ========================================

@@ -9,11 +9,25 @@
         content="Interactive portfolio of Susan (Shuxian) Ho — Data Analyst & Backend Engineer. Explore Hogwarts to discover skills, experience, and projects.">
     <link rel="stylesheet" href="styles.css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;600&family=Caveat:wght@400..700&family=Patrick+Hand&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+
+    <!-- ===== GLOBAL NAVIGATION ===== -->
+    <nav id="global-nav">
+        <div class="nav-links">
+            <a href="#" id="nav-projects-link">projects</a>
+            <a href="#" id="nav-about-link">about me</a>
+        </div>
+        <div class="nav-socials">
+            <a href="mailto:s39ho@uwaterloo.ca" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+            <a href="https://linkedin.com/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+    </nav>
 
     <!-- ===== LOADING SCREEN ===== -->
     <div id="loading-screen">
@@ -42,30 +56,7 @@
 
         <!-- UI layer (above world) -->
         <div id="ui">
-            <!-- Top nav: social links -->
-            <div id="top-nav">
-                <a href="https://github.com/shuxianho07" target="_blank" class="nav-link" title="GitHub">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                    </svg>
-                </a>
-                <a href="https://www.linkedin.com/in/shuxian-susan-ho/" target="_blank" class="nav-link"
-                    title="LinkedIn">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                </a>
-                <a href="mailto:shuxian.ho0401@hotmail.com" target="_blank" class="nav-link" title="Email">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M12 12.713l-11.99-7.713v13.999c0 .552.448 1 1 1h22c.552 0 1-.448 1-1v-13.999l-11.99 7.713zm11.99-9.713c0-.552-.448-1-1-1h-22c-.552 0-1 .448-1 1v-.001l11.99 7.713 11.99-7.712z" />
-                    </svg>
-                </a>
-                <button id="theme-toggle" class="nav-link" aria-label="Toggle light / dark mode">Nox</button>
 
-            </div>
 
             <!-- Back button (inside scenes) -->
             <button id="back-button" class="hidden" aria-label="Go back">⬅ Back Outside</button>
@@ -86,90 +77,274 @@
         <!-- Portfolio overlays -->
         <div id="overlay-skills" class="overlay hidden">
             <div class="overlay-backdrop" data-close="skills"></div>
-            <button class="overlay-close" data-close="skills" aria-label="Close">✕</button>
-            <div class="overlay-panel">
-                <h2 class="overlay-title">📜 Skills & Spells</h2>
-                <div class="overlay-section">
-                    <h3> Backend & APIs</h3>
-                    <p>Python (FastAPI, Flask), Node.js, RESTful API Design, .NET Web API</p>
+            <!-- The Bookshelf Container -->
+            <article class="overlay-container container-bookshelf">
+                <button class="overlay-close suitcase-close" data-close="skills" aria-label="Close" style="color: #fdfaf1;">✕</button>
+                <div class="suitcase-content">
+                    <h2 class="container-title" style="color: #fdfaf1; margin-top: -10px;">Skills & Spells</h2>
+                    <p class="container-subtitle" style="color: #eaddc0;">click on a book</p>
+                    
+                    <div class="bookshelf-shelf">
+                        <div class="book-spine" data-open="skill1" tabindex="0" style="background: #a93226; height: 160px; transform-origin: bottom; transform: rotate(-5deg);">
+                            <span>Languages</span>
+                        </div>
+                        <div class="book-spine" data-open="skill2" tabindex="0" style="background: #2471a3; height: 140px; margin-left: 20px;">
+                            <span>Analytics</span>
+                        </div>
+                        <div class="book-spine" data-open="skill3" tabindex="0" style="background: #229954; height: 155px; margin-left: 5px;">
+                            <span>DevOps</span>
+                        </div>
+                        <div class="book-spine" data-open="skill4" tabindex="0" style="background: #8e44ad; height: 175px; margin-left: auto; transform-origin: bottom; transform: rotate(8deg);">
+                            <span>Machine Learning</span>
+                        </div>
+                    </div>
                 </div>
+            </article>
+        </div>
+
+        <!-- Skills Detail Modals (Secondary Overlays) -->
+        <div id="overlay-skill1" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="skill1"></div>
+            <button class="overlay-close" data-close="skill1" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
+                <h3 class="overlay-title">Languages & Frameworks</h3>
                 <div class="overlay-section">
-                    <h3>🧙 AI & LLM Integration</h3>
-                    <p>OpenAI API, Prompt Engineering, Agent Workflows, RAG Concepts, scikit-learn</p>
+                    <p><strong>Python, SQL, C#, JavaScript, HTML/CSS, VBA, .NET 8, REST APIs</strong></p>
                 </div>
+            </article>
+        </div>
+
+        <div id="overlay-skill2" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="skill2"></div>
+            <button class="overlay-close" data-close="skill2" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
+                <h3 class="overlay-title">Data & Analytics</h3>
                 <div class="overlay-section">
-                    <h3>🏰 Database & DevOps</h3>
-                    <p>PostgreSQL, Docker, Git, CI/CD, Vector Databases</p>
+                    <p><strong>Power BI, Pandas, NumPy, Plotly, Seaborn, A/B Testing, ETL Pipelines</strong></p>
                 </div>
+            </article>
+        </div>
+
+        <div id="overlay-skill3" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="skill3"></div>
+            <button class="overlay-close" data-close="skill3" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
+                <h3 class="overlay-title">Databases & DevOps</h3>
                 <div class="overlay-section">
-                    <h3>🔮 Frontend</h3>
-                    <p>HTML/CSS, JavaScript, React, Responsive Design</p>
+                    <p><strong>PostgreSQL, SQL Server, Docker, Git, CI/CD, ONNX</strong></p>
                 </div>
-            </div>
+            </article>
+        </div>
+
+        <div id="overlay-skill4" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="skill4"></div>
+            <button class="overlay-close" data-close="skill4" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
+                <h3 class="overlay-title">Machine Learning</h3>
+                <div class="overlay-section">
+                    <p><strong>Random Forest, Z-score Detection, scikit-learn, Model Export (ONNX)</strong></p>
+                </div>
+            </article>
         </div>
 
         <div id="overlay-experience" class="overlay hidden">
             <div class="overlay-backdrop" data-close="experience"></div>
-            <button class="overlay-close" data-close="experience" aria-label="Close">✕</button>
-            <div class="overlay-panel">
-                <h2 class="overlay-title">📋 Work Experience</h2>
-                <div class="overlay-section">
-                    <h3>🏛 City of Markham — Data Analyst</h3>
-                    <p>Architected end-to-end Python automation solutions. Streamlined executive reporting workflows by
-                        configuring robust data models.</p>
+            <!-- The Corkboard Container -->
+            <article class="overlay-container container-corkboard">
+                <button class="overlay-close suitcase-close" data-close="experience" aria-label="Close">✕</button>
+                <div class="suitcase-content">
+                    <div class="corkboard-title-note">
+                        <h2 class="container-title" style="transform: rotate(-3deg); color: #8c2a2a;">Experience</h2>
+                        <div class="pin"></div>
+                    </div>
+                    
+                    <div class="suitcase-items">
+                        <!-- Edtech Founder -->
+                        <div class="cork-note" data-open="exp1" tabindex="0" style="left: 10%; top: 40%; transform: rotate(-5deg);">
+                            <div class="pin"></div>
+                            <i class="fas fa-graduation-cap suitcase-icon" style="color: #4a90e2; font-size: 3rem;"></i>
+                            <span class="note-label">Edtech Venture</span>
+                        </div>
+                        <!-- City of Markham -->
+                        <div class="cork-note" data-open="exp2" tabindex="0" style="left: 45%; top: 25%; transform: rotate(4deg);">
+                            <div class="pin"></div>
+                            <i class="fas fa-city suitcase-icon" style="color: #6b8e23; font-size: 3rem;"></i>
+                            <span class="note-label">City of Markham</span>
+                        </div>
+                        <!-- Adobe -->
+                        <div class="cork-note" data-open="exp3" tabindex="0" style="left: 70%; top: 50%; transform: rotate(-2deg);">
+                            <div class="pin"></div>
+                            <i class="fab fa-adobe suitcase-icon" style="color: #ff0000; font-size: 3rem;"></i>
+                            <span class="note-label">Adobe</span>
+                        </div>
+                    </div>
                 </div>
+            </article>
+        </div>
+
+        <!-- Experience Detail Modals (Secondary Overlays) -->
+        <div id="overlay-exp1" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="exp1"></div>
+            <button class="overlay-close" data-close="exp1" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel">
+                <h3 class="overlay-title">Financial Literacy Edtech Venture</h3>
                 <div class="overlay-section">
-                    <h3>🎨 Adobe — Data Analyst Intern</h3>
-                    <p>Strengthened software analytics integrity by developing advanced Python and SQL extraction
-                        scripts to transform operational telemetry data.</p>
+                    <p><strong>Founder & Full-Stack Developer</strong> | 2023 – 2025</p>
+                    <ul>
+                        <li>Founded and developed a full-stack web platform delivering financial literacy curricula to youth aged 6–16 across global markets; recruited and led a team to scale content production and operations.</li>
+                        <li>Designed proprietary data pipelines to capture user engagement and learning-outcome metrics; executed a strategic data licensing agreement generating $500K in revenue at exit.</li>
+                    </ul>
                 </div>
-            </div>
+            </article>
+        </div>
+
+        <div id="overlay-exp2" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="exp2"></div>
+            <button class="overlay-close" data-close="exp2" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel">
+                <h3 class="overlay-title">City of Markham</h3>
+                <div class="overlay-section">
+                    <p><strong>Finance & Data Analyst Intern</strong> | Dec 2024 – Jul 2025</p>
+                    <ul>
+                        <li>Automated ETL pipelines to consolidate legacy financial data and engineered structured schemas for real-time Power BI dashboards, reducing manual processing time by 40%.</li>
+                        <li>Identified and resolved multi-step data inconsistencies across reporting cycles, achieving 100% reconciliation; authored SOPs to support ongoing knowledge transfer.</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+
+        <div id="overlay-exp3" class="overlay hidden overlay-secondary">
+            <div class="overlay-backdrop" data-close="exp3"></div>
+            <button class="overlay-close" data-close="exp3" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel">
+                <h3 class="overlay-title">Adobe</h3>
+                <div class="overlay-section">
+                    <p><strong>Data Analyst Intern</strong> | Dec 2023 – Mar 2024</p>
+                    <ul>
+                        <li>Conducted cohort analyses on large-scale user telemetry data to identify retention drivers and drop-off points, directly informing product roadmap and marketing strategy decisions.</li>
+                        <li>Developed structured SQL datasets for cross-functional teams, enabling evaluation of campaign performance and data-driven feature prioritization.</li>
+                    </ul>
+                </div>
+            </article>
         </div>
 
         <div id="overlay-projects" class="overlay hidden">
             <div class="overlay-backdrop" data-close="projects"></div>
-            <button class="overlay-close" data-close="projects" aria-label="Close">✕</button>
-            <div class="overlay-panel">
-                <h2 class="overlay-title">📚 Project Archives</h2>
-                <div class="overlay-section">
-                    <h3>🤖 LLM-Powered Development Workflow</h3>
-                    <p>Established production-ready evaluation pipelines. Simulated collaborative agent-based workflows
-                        by leveraging version-controlled prompt libraries and the OpenAI API.</p>
+            <!-- The Suitcase Container -->
+            <article class="overlay-container container-suitcase">
+                <button class="overlay-close suitcase-close" data-close="projects" aria-label="Close">✕</button>
+                <div class="suitcase-content">
+                    <h2 class="container-title">Projects</h2>
+                    <p class="container-subtitle">click on an object</p>
+                    
+                    <div class="suitcase-items">
+                        <!-- Flight Price Predictor -->
+                        <div class="suitcase-item" data-open="project1" tabindex="0" style="left: 15%; top: 40%;">
+                            <i class="fas fa-paper-plane suitcase-icon" style="color: #f4f1e1; font-size: 5rem; transform: rotate(-15deg);"></i>
+                            <span class="item-label">Flight Predictor</span>
+                        </div>
+                        <!-- Automated Financial Reporting -->
+                        <div class="suitcase-item" data-open="project2" tabindex="0" style="left: 45%; top: 55%;">
+                            <i class="fas fa-robot suitcase-icon" style="color: #dcd5c4; font-size: 6rem; transform: rotate(10deg);"></i>
+                            <span class="item-label">Auto Reporting</span>
+                        </div>
+                        <!-- Futures Market -->
+                        <div class="suitcase-item" data-open="project3" tabindex="0" style="left: 75%; top: 30%;">
+                            <i class="fas fa-chart-line suitcase-icon" style="color: #4a90e2; font-size: 4.5rem; transform: rotate(-5deg);"></i>
+                            <span class="item-label">Futures Market</span>
+                        </div>
+                    </div>
                 </div>
+                <!-- Suitcase details -->
+                <div class="suitcase-handle"></div>
+                <div class="suitcase-lock left"></div>
+                <div class="suitcase-lock right"></div>
+            </article>
+        </div>
+
+        <!-- Project Detail Modals (Secondary Overlays) -->
+        <div id="overlay-project1" class="overlay hidden">
+            <div class="overlay-backdrop" data-close="project1"></div>
+            <button class="overlay-close" data-close="project1" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel">
+                <h3 class="overlay-title">Flight Price Predictor</h3>
                 <div class="overlay-section">
-                    <h3>🔧 RESTful API Backend & Data Pipeline</h3>
-                    <p>Delivered a highly scalable backend system with FastAPI and Docker. Enforced strict data
-                        integrity standards for PostgreSQL ingestion.</p>
+                    <p><strong>React, Flask, Scikit-Learn</strong> | Jan 2024</p>
+                    <ul>
+                        <li>Developed an end-to-end ML pipeline predicting historical flight prices.</li>
+                        <li>Achieved 91% accuracy over 300,000+ flight records.</li>
+                    </ul>
+                    <a href="https://github.com/" target="_blank">View on GitHub →</a>
                 </div>
+            </article>
+        </div>
+
+        <div id="overlay-project2" class="overlay hidden">
+            <div class="overlay-backdrop" data-close="project2"></div>
+            <button class="overlay-close" data-close="project2" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel">
+                <h3 class="overlay-title">Automated Financial Reporting System</h3>
                 <div class="overlay-section">
-                    <h3>💎 Intelligent Price Predictor API</h3>
-                    <p>Integrated a trained Random Forest model into a low-latency Web API using ONNX.</p>
+                    <p><strong>Python, Pandas, Docker</strong> | Sep 2023</p>
+                    <ul>
+                        <li>Engineered an automated script reducing manual data entry by 85%.</li>
+                        <li>Consolidated 15+ external API sources.</li>
+                    </ul>
                 </div>
-            </div>
+            </article>
+        </div>
+
+        <div id="overlay-project3" class="overlay hidden">
+            <div class="overlay-backdrop" data-close="project3"></div>
+            <button class="overlay-close" data-close="project3" aria-label="Close">✕</button>
+            <article class="overlay-panel polaroid-panel">
+                <h3 class="overlay-title">Futures Market Statistical Analysis</h3>
+                <div class="overlay-section">
+                    <p><strong>R, MATLAB</strong> | Apr 2023</p>
+                    <ul>
+                        <li>Analyzed the predictive power of Futures Market on Spot Prices.</li>
+                        <li>Demonstrated statistically significant correlations over a 5-year dataset.</li>
+                    </ul>
+                </div>
+            </article>
         </div>
 
         <div id="overlay-about" class="overlay hidden">
             <div class="overlay-backdrop" data-close="about"></div>
-            <button class="overlay-close" data-close="about" aria-label="Close">✕</button>
-            <div class="overlay-panel">
-                <h2 class="overlay-title">✨ About Susan</h2>
-                <div class="overlay-section">
-                    <h3>📍 Who I Am</h3>
-                    <p>Data Analyst & Backend Engineer passionate about AI, automation, and building delightful
-                        experiences. Currently seeking opportunities to create impactful solutions.</p>
+            <!-- The Notepad Container -->
+            <article class="overlay-container container-notepad">
+                <button class="overlay-close suitcase-close" data-close="about" aria-label="Close" style="color: #2c2820;">✕</button>
+                <div class="notepad-binding">
+                    <!-- Fake spiral binding holes -->
+                    <div class="spiral" style="top: 10%"></div>
+                    <div class="spiral" style="top: 30%"></div>
+                    <div class="spiral" style="top: 50%"></div>
+                    <div class="spiral" style="top: 70%"></div>
+                    <div class="spiral" style="top: 90%"></div>
                 </div>
-                <div class="overlay-section">
-                    <h3>🎓 Education</h3>
-                    <p>Studying Computer Science with a focus on data systems, machine learning, and full-stack
-                        development.</p>
+                <div class="notepad-content overlay-panel">
+                    <h2 class="overlay-title">About Susan</h2>
+                    <div class="overlay-section">
+                        <h3>Education</h3>
+                        <p><strong>University of Waterloo</strong> — Honours Mathematics, Financial Analysis and Risk Management, Co-op</p>
+                        <p><em>Sep 2025 – Present | Waterloo, ON</em></p>
+                    </div>
+                    <div class="overlay-section">
+                        <h3>Awards &amp; Recognition</h3>
+                        <p><strong>FARMSA Stock Pitch Competition</strong> — 2nd Place (2026), 3rd Place (2025): Conducted fundamental and quantitative analysis on CME Group and Flywire.</p>
+                        <p><strong>Presidential Scholarship, $5,000</strong> — Awarded for academic excellence and leadership potential.</p>
+                        <p><strong>USAMO Qualifier</strong> — National-level recognition in one of North America's most competitive mathematics olympiads (2024).</p>
+                    </div>
+                    <div class="overlay-section">
+                        <h3>Get In Touch</h3>
+                        <p>
+                            <a href="mailto:s39ho@uwaterloo.ca">s39ho@uwaterloo.ca</a> •
+                            <a href="https://github.com/shuxianho07" target="_blank">GitHub</a> •
+                            <a href="https://www.linkedin.com/in/shuxian-susan-ho/" target="_blank">LinkedIn</a>
+                        </p>
+                    </div>
                 </div>
-                <div class="overlay-section">
-                    <h3>💌 Get In Touch</h3>
-                    <p>Feel free to reach out via <a href="https://github.com/shuxianho07" target="_blank">GitHub</a> or
-                        <a href="https://www.linkedin.com/in/shuxian-susan-ho/" target="_blank">LinkedIn</a>!
-                    </p>
-                </div>
-            </div>
+            </article>
         </div>
 
     </div>
