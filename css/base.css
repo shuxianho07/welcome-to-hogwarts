@@ -1,0 +1,530 @@
+/* =
+    Interactive Portfolio
+   ======================================== */
+
+/* --- DESIGN TOKENS --- */
+/* design tokens are the colors and fonts used in the website */
+:root {
+    --bg-dark: #0a0a12;
+    --bg-castle: #12111d;
+    --bg-warm: #1a1510;
+    --gold: #d4a843;
+    --gold-dim: #b8922e;
+    --gold-glow: rgba(212, 168, 67, 0.4);
+    --gold-bright: #f5d67b;
+    --parchment: #f0e6c9;
+    --parchment-dark: #dac89e;
+    --stone: #3a3845;
+    --stone-light: #5a5768;
+    --maroon: #5c1a1a;
+    --green-dark: #1a3a2a;
+    --text-main: #e8e4dd;
+    --text-dim: #9a968e;
+    --overlay-bg: rgba(10, 10, 18, 0.92);
+    --panel-bg: rgba(22, 20, 32, 0.95);
+    --panel-border: rgba(212, 168, 67, 0.25);
+    --transition-fast: 150ms ease;
+    --transition-med: 300ms ease;
+    --transition-slow: 600ms ease;
+}
+
+/* --- BASE RESET --- */
+*,
+/*this is a reset for all the elements in the website*/
+
+*::before,
+*::after {
+    box-sizing: border-box;
+    /*this is a reset for all the elements in the website*/
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    cursor: default;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+}
+
+
+/* =
+   GAME CONTAINER
+   ======================================== */
+/*this is the game container*/
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+#game.hidden {
+    display: none;
+}
+
+/* this is for the landing page*/
+#game::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.9),
+        inset 0 0 80px rgba(0, 0, 0, 0.5);
+    z-index: 500;
+}
+
+/* --- WORLD --- */
+#world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: transform;
+    z-index: 1;
+}
+
+#bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    user-select: none;
+    image-rendering: auto;
+}
+
+/* --- CHARACTER --- */
+#character {
+    position: absolute;
+    width: 208px;
+    height: 338px;
+    object-fit: contain;
+    object-position: center bottom;
+    transform: translate(-50%, -100%) scaleX(var(--facing, 1));
+    transform-origin: 50% 100%;
+    pointer-events: none;
+    z-index: 100;
+    /* Subtle shadow — white backgrounds removed programmatically via canvas */
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+#character.jumping {
+    filter: none !important;
+}
+
+/* Half-body mode for the corridor/inside scene — show waist-up only */
+#character.half-body {
+    clip-path: inset(0 0 45% 0);
+    /* Sized so the visible 55% (~358px) reaches roughly mid-page — realistic adult scale */
+    width: 400px;
+    height: 650px;
+    /* -45% pushes the visible portion's bottom right to the screen edge */
+    transform: translate(-50%, -45%) scaleX(var(--facing, 1));
+    /* Smooth the left/right flip so direction changes aren't jarring */
+    transition: transform 0.15s ease;
+}
+
+/* --- SPOTLIGHT --- */
+#spotlight-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#spotlight-overlay.active {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+#spotlight-overlay.spotlight {
+    background: radial-gradient(circle 500px at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+            transparent 0%,
+            transparent 20%,
+            rgba(0, 0, 0, 0.08) 30%,
+            rgba(0, 0, 0, 0.15) 40%,
+            rgba(0, 0, 0, 0.25) 55%,
+            rgba(0, 0, 0, 0.32) 70%,
+            rgba(0, 0, 0, 0.35) 100%);
+}
+
+
+/* =
+   LANDING PAGE TEXT
+   ======================================== */
+.greeting-text {
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    font-family: 'Caveat', cursive;
+    font-size: 5rem;
+    line-height: 1.1;
+    color: var(--gold-bright);
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8),
+        0 0 30px var(--gold-glow);
+    transform: rotate(-3deg);
+    pointer-events: none;
+    z-index: 50;
+    animation: float 4s ease-in-out infinite;
+}
+
+.greeting-text .highlight {
+    font-size: 7.5rem;
+    color: #fff;
+    display: block;
+    margin-top: -10px;
+}
+
+.instruction-text {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1px;
+    z-index: 50;
+    pointer-events: none;
+}
+
+
+/* =
+   HOTSPOT MARKERS (in-world interactive items)
+   ======================================== */
+.hotspot-marker {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 50;
+    transition: filter var(--transition-med);
+}
+
+.hotspot-marker.near {
+    filter: drop-shadow(0 0 20px var(--gold-glow));
+}
+
+.hotspot-icon {
+    font-size: 48px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+    animation: float 3s ease-in-out infinite;
+}
+
+.hotspot-icon-img {
+    display: block;
+    object-fit: fill;
+    /* stretch to exactly match the background item */
+    border: none;
+    border-radius: 0;
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    opacity: 0.88;
+}
+
+.hotspot-label {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--parchment);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+
+/* =
+   ANIMATIONS
+   ======================================== */
+@keyframes shimmer {
+
+    0%,
+    100% {
+        text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(212, 168, 67, 0.15);
+    }
+
+    50% {
+        text-shadow: 0 0 40px rgba(212, 168, 67, 0.6), 0 0 80px rgba(212, 168, 67, 0.25);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    25% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    50% {
+        opacity: 0.85;
+        transform: scale(0.98);
+    }
+
+    75% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.container-corkboard {
+    position: relative;
+    width: 650px;
+    max-width: 90vw;
+    height: 450px;
+    background: #d4a373 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="3" fill="rgba(0,0,0,0.05)"/></svg>');
+    border: 15px solid #5c4033;
+    /* Dark wood border */
+    border-radius: 8px;
+    /* sharp corners */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.4);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.corkboard-title-note {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fdfaf1;
+    padding: 10px 30px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pin {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: #e74c3c;
+    border-radius: 50%;
+    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.4), 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.pin::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+}
+
+.cork-note {
+    position: absolute;
+    background: #fdfaf1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 130px;
+}
+
+.cork-note:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 10;
+}
+
+.cork-note .note-label {
+    font-family: 'Patrick Hand', cursive;
+    color: #2c2820;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+
+.container-notepad {
+    position: relative;
+    width: 600px;
+    max-width: 90vw;
+    background: transparent;
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+}
+
+.container-notepad .notepad-content {
+    box-shadow: 10px 15px 0px rgba(0, 0, 0, 0.3);
+    margin-left: 20px;
+    width: 100%;
+}
+
+.notepad-binding {
+    position: absolute;
+    left: 0;
+    top: 5%;
+    bottom: 5%;
+    width: 45px;
+    background: #a93226;
+    /* Dark red binding tape */
+    border-radius: 6px 0 0 6px;
+    box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.4), 4px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 210;
+}
+
+.spiral {
+    position: absolute;
+    left: 10px;
+    width: 25px;
+    height: 12px;
+    background: #111;
+    border-radius: 6px;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+
+.container-bookshelf {
+    position: relative;
+    width: 600px;
+    max-width: 90vw;
+    height: 400px;
+    background: #3e2617;
+    /* Dark library wood */
+    border: 15px solid #231107;
+    border-radius: 8px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 60px rgba(0, 0, 0, 0.8);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.bookshelf-shelf {
+    position: absolute;
+    bottom: 40px;
+    left: 5%;
+    right: 5%;
+    height: 25px;
+    background: #543622;
+    border-bottom: 5px solid #231107;
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: flex-end;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.book-spine {
+    width: 55px;
+    border-radius: 5px 5px 0 0;
+    box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.4), 2px 0 5px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* Extra book spine detailing */
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    border-right: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+.book-spine:hover {
+    transform: translateY(-15px) !important;
+    z-index: 10;
+}
+
+.book-spine span {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: #fdfaf1;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    transform: rotate(180deg);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}

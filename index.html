@@ -7,7 +7,13 @@
     <title>Susan Ho's Interactive Portfolio</title>
     <meta name="description"
         content="Interactive portfolio of Susan (Shuxian) Ho — Data Analyst & Backend Engineer. Explore Hogwarts to discover skills, experience, and projects.">
-    <link rel="stylesheet" href="styles.css">
+    <!-- Modular CSS Architecture -->
+    <link rel="stylesheet" href="css/base.css?v=3">
+    <link rel="stylesheet" href="css/layout.css?v=3">
+    <link rel="stylesheet" href="css/character.css?v=3">
+    <link rel="stylesheet" href="css/ui.css?v=3">
+    <link rel="stylesheet" href="css/overlays.css?v=3">
+    <link rel="stylesheet" href="css/containers.css?v=3">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;600&family=Caveat:wght@400..700&family=Patrick+Hand&display=swap"
         rel="stylesheet">
@@ -79,22 +85,27 @@
             <div class="overlay-backdrop" data-close="skills"></div>
             <!-- The Bookshelf Container -->
             <article class="overlay-container container-bookshelf">
-                <button class="overlay-close suitcase-close" data-close="skills" aria-label="Close" style="color: #fdfaf1;">✕</button>
+                <button class="overlay-close suitcase-close" data-close="skills" aria-label="Close"
+                    style="color: #fdfaf1;">✕</button>
                 <div class="suitcase-content">
                     <h2 class="container-title" style="color: #fdfaf1; margin-top: -10px;">Skills & Spells</h2>
                     <p class="container-subtitle" style="color: #eaddc0;">click on a book</p>
-                    
+
                     <div class="bookshelf-shelf">
-                        <div class="book-spine" data-open="skill1" tabindex="0" style="background: #a93226; height: 160px; transform-origin: bottom; transform: rotate(-5deg);">
+                        <div class="book-spine" data-open="skill1" tabindex="0"
+                            style="background: #a93226; height: 160px; transform-origin: bottom; transform: rotate(-5deg);">
                             <span>Languages</span>
                         </div>
-                        <div class="book-spine" data-open="skill2" tabindex="0" style="background: #2471a3; height: 140px; margin-left: 20px;">
+                        <div class="book-spine" data-open="skill2" tabindex="0"
+                            style="background: #2471a3; height: 140px; margin-left: 20px;">
                             <span>Analytics</span>
                         </div>
-                        <div class="book-spine" data-open="skill3" tabindex="0" style="background: #229954; height: 155px; margin-left: 5px;">
+                        <div class="book-spine" data-open="skill3" tabindex="0"
+                            style="background: #229954; height: 155px; margin-left: 5px;">
                             <span>DevOps</span>
                         </div>
-                        <div class="book-spine" data-open="skill4" tabindex="0" style="background: #8e44ad; height: 175px; margin-left: auto; transform-origin: bottom; transform: rotate(8deg);">
+                        <div class="book-spine" data-open="skill4" tabindex="0"
+                            style="background: #8e44ad; height: 175px; margin-left: auto; transform-origin: bottom; transform: rotate(8deg);">
                             <span>Machine Learning</span>
                         </div>
                     </div>
@@ -157,22 +168,25 @@
                         <h2 class="container-title" style="transform: rotate(-3deg); color: #8c2a2a;">Experience</h2>
                         <div class="pin"></div>
                     </div>
-                    
+
                     <div class="suitcase-items">
                         <!-- Edtech Founder -->
-                        <div class="cork-note" data-open="exp1" tabindex="0" style="left: 10%; top: 40%; transform: rotate(-5deg);">
+                        <div class="cork-note" data-open="exp1" tabindex="0"
+                            style="left: 10%; top: 40%; transform: rotate(-5deg);">
                             <div class="pin"></div>
                             <i class="fas fa-graduation-cap suitcase-icon" style="color: #4a90e2; font-size: 3rem;"></i>
                             <span class="note-label">Edtech Venture</span>
                         </div>
                         <!-- City of Markham -->
-                        <div class="cork-note" data-open="exp2" tabindex="0" style="left: 45%; top: 25%; transform: rotate(4deg);">
+                        <div class="cork-note" data-open="exp2" tabindex="0"
+                            style="left: 45%; top: 25%; transform: rotate(4deg);">
                             <div class="pin"></div>
                             <i class="fas fa-city suitcase-icon" style="color: #6b8e23; font-size: 3rem;"></i>
                             <span class="note-label">City of Markham</span>
                         </div>
                         <!-- Adobe -->
-                        <div class="cork-note" data-open="exp3" tabindex="0" style="left: 70%; top: 50%; transform: rotate(-2deg);">
+                        <div class="cork-note" data-open="exp3" tabindex="0"
+                            style="left: 70%; top: 50%; transform: rotate(-2deg);">
                             <div class="pin"></div>
                             <i class="fab fa-adobe suitcase-icon" style="color: #ff0000; font-size: 3rem;"></i>
                             <span class="note-label">Adobe</span>
@@ -191,8 +205,11 @@
                 <div class="overlay-section">
                     <p><strong>Founder & Full-Stack Developer</strong> | 2023 – 2025</p>
                     <ul>
-                        <li>Founded and developed a full-stack web platform delivering financial literacy curricula to youth aged 6–16 across global markets; recruited and led a team to scale content production and operations.</li>
-                        <li>Designed proprietary data pipelines to capture user engagement and learning-outcome metrics; executed a strategic data licensing agreement generating $500K in revenue at exit.</li>
+                        <li>Founded and developed a full-stack web platform delivering financial literacy curricula to
+                            youth aged 6–16 across global markets; recruited and led a team to scale content production
+                            and operations.</li>
+                        <li>Designed proprietary data pipelines to capture user engagement and learning-outcome metrics;
+                            executed a strategic data licensing agreement generating $500K in revenue at exit.</li>
                     </ul>
                 </div>
             </article>
@@ -206,8 +223,10 @@
                 <div class="overlay-section">
                     <p><strong>Finance & Data Analyst Intern</strong> | Dec 2024 – Jul 2025</p>
                     <ul>
-                        <li>Automated ETL pipelines to consolidate legacy financial data and engineered structured schemas for real-time Power BI dashboards, reducing manual processing time by 40%.</li>
-                        <li>Identified and resolved multi-step data inconsistencies across reporting cycles, achieving 100% reconciliation; authored SOPs to support ongoing knowledge transfer.</li>
+                        <li>Automated ETL pipelines to consolidate legacy financial data and engineered structured
+                            schemas for real-time Power BI dashboards, reducing manual processing time by 40%.</li>
+                        <li>Identified and resolved multi-step data inconsistencies across reporting cycles, achieving
+                            100% reconciliation; authored SOPs to support ongoing knowledge transfer.</li>
                     </ul>
                 </div>
             </article>
@@ -221,8 +240,11 @@
                 <div class="overlay-section">
                     <p><strong>Data Analyst Intern</strong> | Dec 2023 – Mar 2024</p>
                     <ul>
-                        <li>Conducted cohort analyses on large-scale user telemetry data to identify retention drivers and drop-off points, directly informing product roadmap and marketing strategy decisions.</li>
-                        <li>Developed structured SQL datasets for cross-functional teams, enabling evaluation of campaign performance and data-driven feature prioritization.</li>
+                        <li>Conducted cohort analyses on large-scale user telemetry data to identify retention drivers
+                            and drop-off points, directly informing product roadmap and marketing strategy decisions.
+                        </li>
+                        <li>Developed structured SQL datasets for cross-functional teams, enabling evaluation of
+                            campaign performance and data-driven feature prioritization.</li>
                     </ul>
                 </div>
             </article>
@@ -236,21 +258,24 @@
                 <div class="suitcase-content">
                     <h2 class="container-title">Projects</h2>
                     <p class="container-subtitle">click on an object</p>
-                    
+
                     <div class="suitcase-items">
                         <!-- Flight Price Predictor -->
                         <div class="suitcase-item" data-open="project1" tabindex="0" style="left: 15%; top: 40%;">
-                            <i class="fas fa-paper-plane suitcase-icon" style="color: #f4f1e1; font-size: 5rem; transform: rotate(-15deg);"></i>
+                            <i class="fas fa-paper-plane suitcase-icon"
+                                style="color: #f4f1e1; font-size: 5rem; transform: rotate(-15deg);"></i>
                             <span class="item-label">Flight Predictor</span>
                         </div>
                         <!-- Automated Financial Reporting -->
                         <div class="suitcase-item" data-open="project2" tabindex="0" style="left: 45%; top: 55%;">
-                            <i class="fas fa-robot suitcase-icon" style="color: #dcd5c4; font-size: 6rem; transform: rotate(10deg);"></i>
+                            <i class="fas fa-robot suitcase-icon"
+                                style="color: #dcd5c4; font-size: 6rem; transform: rotate(10deg);"></i>
                             <span class="item-label">Auto Reporting</span>
                         </div>
                         <!-- Futures Market -->
                         <div class="suitcase-item" data-open="project3" tabindex="0" style="left: 75%; top: 30%;">
-                            <i class="fas fa-chart-line suitcase-icon" style="color: #4a90e2; font-size: 4.5rem; transform: rotate(-5deg);"></i>
+                            <i class="fas fa-chart-line suitcase-icon"
+                                style="color: #4a90e2; font-size: 4.5rem; transform: rotate(-5deg);"></i>
                             <span class="item-label">Futures Market</span>
                         </div>
                     </div>
@@ -308,43 +333,43 @@
                 </div>
             </article>
         </div>
-
         <div id="overlay-about" class="overlay hidden">
             <div class="overlay-backdrop" data-close="about"></div>
-            <!-- The Notepad Container -->
-            <article class="overlay-container container-notepad">
-                <button class="overlay-close suitcase-close" data-close="about" aria-label="Close" style="color: #2c2820;">✕</button>
-                <div class="notepad-binding">
-                    <!-- Fake spiral binding holes -->
-                    <div class="spiral" style="top: 10%"></div>
-                    <div class="spiral" style="top: 30%"></div>
-                    <div class="spiral" style="top: 50%"></div>
-                    <div class="spiral" style="top: 70%"></div>
-                    <div class="spiral" style="top: 90%"></div>
+
+            <div class="scrapbook-window">
+                <button id="close-scrapbook" class="overlay-close" data-close="about" aria-label="Close">✕</button>
+
+                <div class="scrapbook-layout">
+                    <div class="photo-container">
+                        <img src="assets/about-photo.jpg" alt="Susan Ho" class="polaroid">
+                    </div>
+
+                    <div class="bio-container">
+                        <h2 class="handwriting-title">Hey, I'm Susan!</h2>
+                        <div class="bio-text">
+                            <p>I'm an <strong>Honours Math & Financial Analysis</strong> student at
+                                <strong>UWaterloo</strong> who loves turning messy data into elegant, scalable systems.
+                            </p>
+
+                            <p>As the former <strong>CTO</strong> of a financial literacy EdTech, I built proprietary
+                                data pipelines that scaled our platform to <strong>60K+ global users</strong>.</p>
+
+                            <p>I've also architected automated ETL pipelines for the <strong>City of Markham</strong>
+                                and run massive cohort analyses on telemetry data at <strong>Adobe</strong>.</p>
+
+                            <p>Whether I'm training ML models or deploying REST APIs, I thrive on solving complex
+                                problems. Let's build something cool!</p>
+                        </div>
+
+
+                        <div class="scrapbook-buttons">
+                            <a href="mailto:s39ho@uwaterloo.ca" class="tape-btn">Email Me</a>
+                            <a href="https://www.linkedin.com/in/shuxian-susan-ho/" target="_blank"
+                                class="tape-btn">LinkedIn</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="notepad-content overlay-panel">
-                    <h2 class="overlay-title">About Susan</h2>
-                    <div class="overlay-section">
-                        <h3>Education</h3>
-                        <p><strong>University of Waterloo</strong> — Honours Mathematics, Financial Analysis and Risk Management, Co-op</p>
-                        <p><em>Sep 2025 – Present | Waterloo, ON</em></p>
-                    </div>
-                    <div class="overlay-section">
-                        <h3>Awards &amp; Recognition</h3>
-                        <p><strong>FARMSA Stock Pitch Competition</strong> — 2nd Place (2026), 3rd Place (2025): Conducted fundamental and quantitative analysis on CME Group and Flywire.</p>
-                        <p><strong>Presidential Scholarship, $5,000</strong> — Awarded for academic excellence and leadership potential.</p>
-                        <p><strong>USAMO Qualifier</strong> — National-level recognition in one of North America's most competitive mathematics olympiads (2024).</p>
-                    </div>
-                    <div class="overlay-section">
-                        <h3>Get In Touch</h3>
-                        <p>
-                            <a href="mailto:s39ho@uwaterloo.ca">s39ho@uwaterloo.ca</a> •
-                            <a href="https://github.com/shuxianho07" target="_blank">GitHub</a> •
-                            <a href="https://www.linkedin.com/in/shuxian-susan-ho/" target="_blank">LinkedIn</a>
-                        </p>
-                    </div>
-                </div>
-            </article>
+            </div>
         </div>
 
     </div>
@@ -357,8 +382,11 @@
         </div>
         <button class="touch-btn touch-jump" data-key="up">↑</button>
     </div>
-
-    <script src="script.js"></script>
+    <!-- Modular Game Engine Logic -->
+    <script src="js/setup.js?v=3"></script>
+    <script src="js/scene.js?v=3"></script>
+    <script src="js/input.js?v=3"></script>
+    <script src="js/main.js?v=3"></script>
 </body>
 
 </html>

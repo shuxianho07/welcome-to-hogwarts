@@ -54,7 +54,7 @@ h3 {
 }
 
 /* ========================================
-   GLOBAL NAVIGATION (FIONA FANG STYLE)
+   GLOBAL NAVIGATION
    ======================================== */
 #global-nav {
     position: fixed;
@@ -295,7 +295,7 @@ h3 {
 }
 
 /* ========================================
-   FIONA FANG STYLE LANDING PAGE TEXT
+   LANDING PAGE TEXT
    ======================================== */
 .greeting-text {
     position: absolute;
@@ -611,6 +611,11 @@ button.nav-link {
     background: var(--overlay-bg);
     backdrop-filter: blur(6px);
     cursor: pointer;
+}
+
+#overlay-about .overlay-backdrop {
+    background: rgba(30, 25, 35, 0.75); /* A bit darker, but visibly transparent to show the corridor */
+    backdrop-filter: blur(4px);
 }
 
 .overlay-close {
@@ -956,9 +961,7 @@ button.nav-link {
     }
 }
 
-/* ========================================
-   FIONA FANG SPECIFIC - CORKBOARD
-   ======================================== */
+
 .container-corkboard {
     position: relative;
     width: 650px;
@@ -1033,9 +1036,7 @@ button.nav-link {
     text-align: center;
 }
 
-/* ========================================
-   FIONA FANG SPECIFIC - NOTEPAD
-   ======================================== */
+
 .container-notepad {
     position: relative;
     width: 600px;
@@ -1074,9 +1075,7 @@ button.nav-link {
     box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);
 }
 
-/* ========================================
-   FIONA FANG SPECIFIC - BOOKSHELF
-   ======================================== */
+
 .container-bookshelf {
     position: relative;
     width: 600px;
@@ -1139,8 +1138,163 @@ button.nav-link {
 }
 
 /* ========================================
-   RESPONSIVE
+   STAGE 5: ORGANIC SCRAPBOOK (About Me)
    ======================================== */
+#scrapbook-layer {
+    position: fixed; /* Fixed ensures it covers the whole screen */
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to sit on top of everything */
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.scrapbook-window {
+    background-color: #E8DCC4; /* Parchment paper color */
+    
+    /* Subtle dot texture to make it feel like real sketchbook paper */
+    background-image: radial-gradient(#d4c5ab 1px, transparent 0), radial-gradient(#d4c5ab 1px, transparent 0);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+
+    width: 850px;
+    max-width: 90vw;
+    padding: 50px;
+    position: relative;
+
+    /* THE MAGIC: Irregular, wonky border radius to look hand-drawn */
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+
+    /* Thick, uneven marker border */
+    border: 8px solid #3e352b;
+    box-shadow: 
+        4px 4px 0px rgba(62, 53, 43, 0.8),   /* Simulates marker bleed */
+        -2px -3px 0px rgba(62, 53, 43, 0.6), /* Simulates marker bleed */
+        15px 15px 30px rgba(0,0,0,0.6);      /* Shadow on the background */
+    
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#close-scrapbook {
+    position: absolute;
+    top: 20px; 
+    right: 30px;
+    background: transparent;
+    border: none;
+    font-size: 42px;
+    font-family: 'Caveat', cursive;
+    font-weight: bold;
+    color: #3e352b;
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+#close-scrapbook:hover {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.scrapbook-layout {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.photo-container {
+    flex: 0.8;
+}
+
+/* Polarid Frame with Vertical Photo Fix */
+.polaroid {
+    width: 100%;
+    max-width: 300px; 
+    height: 380px;    
+    object-fit: cover; /* Auto-crops your vertical photo perfectly */
+    object-position: center 20%; /* Keeps your face in frame */
+    border: 15px solid #fdfaf1;
+    border-bottom: 50px solid #fdfaf1;
+    /* Hand-drawn drop shadow */
+    box-shadow: 8px 8px 0px rgba(0,0,0,0.15);
+    transform: rotate(-3deg); 
+    transition: transform 0.3s ease;
+}
+
+.polaroid:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+
+.bio-container {
+    flex: 1.2;
+    color: #2c2820;
+}
+
+.handwriting-title {
+    font-family: 'Caveat', cursive;
+    font-size: 52px;
+    margin: 0 0 15px 0;
+    color: #8c2a2a; /* Dark red ink */
+    transform: rotate(-2deg);
+}
+
+.bio-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #2c2820;
+    margin-bottom: 35px;
+}
+
+.bio-text p {
+    margin-bottom: 15px;
+}
+
+.bio-text strong {
+    font-weight: 700;
+    color: #8c2a2a; /* Muted red to draw the eye cleanly */
+}
+
+/* Make the buttons look like hand-drawn clay blobs */
+.scrapbook-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.tape-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a3a2a; /* Slytherin green from your tokens */
+    color: #E8DCC4;
+    padding: 10px 25px;
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    font-weight: bold;
+    text-decoration: none;
+    
+    /* Blob shape */
+    border-radius: 40px 15px 30px 20px / 20px 30px 15px 40px;
+    border: 4px solid #0a0a12;
+    box-shadow: 4px 4px 0px rgba(10, 10, 18, 0.8);
+    
+    transform: rotate(2deg);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.tape-btn:nth-child(2) {
+    background: #543622; /* Brown accent for the second button */
+    transform: rotate(-2deg);
+}
+
+.tape-btn:hover {
+    transform: translateY(-3px) scale(1.05) rotate(0deg);
+    box-shadow: 6px 6px 0px rgba(10, 10, 18, 0.8);
+    color: #fff;
+}
+
 @media (max-width: 768px) {
     .loading-content {
         padding: 24px;

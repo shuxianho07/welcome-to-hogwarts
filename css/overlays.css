@@ -1,0 +1,172 @@
+/* =
+   OVERLAY SYSTEM (Portfolio)
+   ======================================== */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--overlay-bg);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+}
+
+#overlay-about .overlay-backdrop {
+    background: rgba(30, 25, 35, 0.75);
+    /* A bit darker, but visibly transparent to show the corridor */
+    backdrop-filter: blur(4px);
+}
+
+.overlay-close {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--parchment);
+    font-size: 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 210;
+    transition: all var(--transition-fast);
+}
+
+.overlay-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.1);
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.overlay-panel {
+    position: relative;
+    background: #f4f1e1;
+    /* Light sketchbook paper */
+    border: 1px solid #dcd5c4;
+    border-radius: 4px;
+    /* Flatter, book-like corners */
+    padding: 40px 50px;
+    max-width: 650px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: 205;
+    /* Hand-drawn style drop shadow */
+    box-shadow: 12px 15px 0px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(0, 0, 0, 0.8);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Subtle paper texture using CSS gradient: a red margin line and light blue horizontal rules */
+    background-image:
+        linear-gradient(90deg, transparent 40px, #e8a0a0 40px, #e8a0a0 42px, transparent 42px),
+        linear-gradient(#f4f1e1 1.2em, #eaddc0 1.2em, #eaddc0 1.3em, #f4f1e1 1.3em);
+    background-size: 100% 1.3em;
+}
+
+/* Scrapbook tape effect */
+.overlay-panel::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 120px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-left: 2px dashed rgba(0, 0, 0, 0.1);
+    border-right: 2px dashed rgba(0, 0, 0, 0.1);
+    z-index: 210;
+    pointer-events: none;
+}
+
+/* Custom scrollbar for overlays */
+.overlay-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.overlay-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.overlay-panel::-webkit-scrollbar-thumb {
+    background: rgba(212, 168, 67, 0.3);
+    border-radius: 3px;
+}
+
+.overlay-title {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(36px, 6vw, 54px);
+    color: #2c2820;
+    /* Dark ink */
+    margin-bottom: 24px;
+    margin-left: 20px;
+    /* Offset to clear the margin line */
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+    letter-spacing: 1px;
+    transform: rotate(-2deg);
+}
+
+.overlay-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    margin-left: 20px;
+    /* Clear notebook red line */
+    border-bottom: 2px dashed rgba(44, 40, 32, 0.15);
+    /* Ink dash */
+}
+
+.overlay-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.overlay-section h3 {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 24px;
+    color: #8c2a2a;
+    /* Red ink for headers */
+    margin-bottom: 4px;
+    font-weight: normal;
+}
+
+.overlay-section p,
+.overlay-section li {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    color: #2c2820;
+    /* Dark ink */
+    line-height: 1.5;
+    opacity: 0.95;
+}
+
+.overlay-section ul {
+    margin-left: 20px;
+    margin-top: 8px;
+}
+
+.overlay-section a {
+    color: #3b5998;
+    /* Blue ink */
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.overlay-section a:hover {
+    border-bottom-color: #3b5998;
+    background: rgba(59, 89, 152, 0.1);
+}

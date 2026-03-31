@@ -1,0 +1,222 @@
+/* =
+   GLOBAL NAVIGATION
+   ======================================== */
+#global-nav {
+    position: fixed;
+    top: 25px;
+    right: 40px;
+    z-index: 1000;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.6rem;
+    pointer-events: auto;
+    /* ensure clickable outside game world */
+}
+
+#global-nav .nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+#global-nav .nav-socials {
+    display: flex;
+    gap: 15px;
+}
+
+#global-nav a {
+    color: var(--gold-bright);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: var(--transition-fast);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+#global-nav a:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 10px var(--gold-glow);
+}
+
+#global-nav i {
+    font-size: 1.5rem;
+}
+
+
+/* =
+   LOADING SCREEN
+   ======================================== */
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(ellipse at center, #1a1830 0%, var(--bg-dark) 100%);
+    z-index: 9999;
+    transition: opacity 0.8s ease;
+}
+
+#loading-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    max-width: 420px;
+    padding: 40px;
+}
+
+.loading-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(24px, 5vw, 36px);
+    color: var(--gold);
+    text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(212, 168, 67, 0.15);
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.loading-subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.loading-bar-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid rgba(212, 168, 67, 0.15);
+}
+
+#progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-bright));
+    border-radius: 4px;
+    transition: width 0.15s linear;
+    box-shadow: 0 0 12px var(--gold-glow);
+}
+
+#progress-text {
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+#enter-btn {
+    margin-top: 24px;
+    padding: 14px 36px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all var(--transition-med);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+#enter-btn:hover {
+    background: var(--gold);
+    color: var(--bg-dark);
+    box-shadow: 0 0 25px var(--gold-glow), 0 4px 20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+
+/* =
+   SCENE BACKGROUNDS (CSS-based placeholders)
+   ======================================== */
+
+/* Outside / Main Page Layout */
+.scene-outside {
+    background: url('../assets/morning.png') center bottom no-repeat;
+    background-size: cover;
+    /* Fill the element completely, keeping aspect ratio */
+    position: relative;
+}
+
+/* Nox mode (night): switch the outside background */
+.scene-outside[data-theme="nox"] {
+    background: url('../assets/night.jpg') center bottom no-repeat;
+    background-size: cover;
+}
+
+
+/* Inside — Slytherin Common Room */
+.scene-inside {
+    background: url('../assets/corridor.jpg') bottom left no-repeat;
+    background-size: auto 100%;
+    image-rendering: auto;
+    position: relative;
+}
+
+
+/* =
+   FADE TRANSITION
+   ======================================== */
+#fade {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-med);
+}
+
+#fade.show {
+    opacity: 1;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+@media (max-width: 768px) {
+    .loading-content {
+        padding: 24px;
+    }
+
+    .overlay-panel {
+        padding: 24px;
+    }
+
+    #movement-instructions {
+        display: none !important;
+    }
+
+    .nav-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    #top-nav {
+        gap: 10px;
+        top: 14px;
+        right: 14px;
+    }
+
+    #back-button {
+        font-size: 11px;
+        padding: 6px 12px;
+        top: 14px;
+        left: 14px;
+    }
+}

@@ -46,7 +46,7 @@ const CONFIG = {
             { id: 'projects',
               label: 'Project Archives',
               iconSrc: 'assets/icons/projects.png',
-              bgImgX: 1114, bgImgY: 168, bgImgW: 120, bgImgH: 288 }, // Exact size of right narrow frame
+              bgImgX: 1000, bgImgY: 50, bgImgW: 160, bgImgH: 350 }, // Exact size of right narrow frame
             { id: 'about',
               label: 'About Me',
               iconSrc: 'assets/icons/about.png',
@@ -437,13 +437,13 @@ function addOutsideDecorations() {
     // Fiona Fang style greeting title
     const greeting = document.createElement('div');
     greeting.className = 'greeting-text';
-    greeting.innerHTML = `I'm <span class="highlight">Shuxian</span>,<br>Come in ➔`;
+    greeting.innerHTML = `I'm <span class="highlight">Susan Ho</span>,<br>Come in ➔`;
     worldEl.appendChild(greeting);
 
     // Instructional text at the bottom
     const instruction = document.createElement('div');
     instruction.className = 'instruction-text';
-    instruction.innerHTML = `Use arrow or WASD keys to move & press E to interact ✨`;
+    instruction.innerHTML = `Use arrow or WASD keys to move & press E to interact`;
     worldEl.appendChild(instruction);
 }
 
