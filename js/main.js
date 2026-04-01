@@ -262,6 +262,7 @@ function startGame() {
     initTheme();
     setupTouchControls();
     enableSpotlight();
+    if (window.va) va('event', 'game_start');
 
     // Make game div focusable and grab focus so keys work on deployed sites
     gameEl.setAttribute('tabindex', '0');

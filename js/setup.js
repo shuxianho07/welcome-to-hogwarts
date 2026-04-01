@@ -154,7 +154,9 @@ function applyTheme(mode) {
 }
 
 function toggleTheme() {
-    applyTheme(themeMode === 'nox' ? 'light' : 'nox');
+    const newTheme = themeMode === 'nox' ? 'light' : 'nox';
+    applyTheme(newTheme);
+    if (window.va) va('event', 'toggle_theme', { theme: newTheme });
 }
 
 function initTheme() {

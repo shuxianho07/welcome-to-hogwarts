@@ -96,6 +96,7 @@ function enterHouse() {
         fadeOutIn(() => {
             setupScene('inside');
             showChat('Welcome to the Common Room! Explore to find my portfolio...');
+            if (window.va) va('event', 'enter_castle');
         });
     });
 }
@@ -104,6 +105,7 @@ function exitHouse() {
     fadeOutIn(() => {
         setupScene('outside');
         showChat('I see you coming back. Want to take another look around?');
+        if (window.va) va('event', 'exit_castle');
     });
 }
 
@@ -157,6 +159,7 @@ function openOverlay(id) {
     if (!overlay) return;
     overlayOpen = true;
     show(overlay);
+    if (window.va) va('event', 'open_overlay', { id: id });
 }
 
 function closeOverlay(id) {

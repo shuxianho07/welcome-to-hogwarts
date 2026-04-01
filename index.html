@@ -21,7 +21,7 @@
     <script>
       window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
-    <script defer src="/_vercel/insights/script.backup.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
@@ -33,9 +33,9 @@
             <a href="#" id="nav-about-link">about me</a>
         </div>
         <div class="nav-socials">
-            <a href="mailto:s39ho@uwaterloo.ca" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
-            <a href="https://linkedin.com/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-            <a href="https://github.com/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="mailto:s39ho@uwaterloo.ca" target="_blank" title="Email" onclick="va('event', 'click_social', { type: 'Email' })"><i class="fas fa-envelope"></i></a>
+            <a href="https://linkedin.com/" target="_blank" title="LinkedIn" onclick="va('event', 'click_social', { type: 'LinkedIn' })"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/" target="_blank" title="GitHub" onclick="va('event', 'click_social', { type: 'GitHub' })"><i class="fab fa-github"></i></a>
         </div>
     </nav>
 
