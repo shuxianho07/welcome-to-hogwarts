@@ -211,4 +211,22 @@ backButton.addEventListener('click', () => {
     if (!overlayOpen && !sceneTransitioning) exitHouse();
 });
 
+// Global Navigation Links
+const navProjectsLink = document.getElementById('nav-projects-link');
+const navAboutLink = document.getElementById('nav-about-link');
+
+if (navProjectsLink) {
+    navProjectsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openOverlay('projects');
+    });
+}
+
+if (navAboutLink) {
+    navAboutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openOverlay('about');
+    });
+}
+
 // =============================================

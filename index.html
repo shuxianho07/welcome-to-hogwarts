@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/ui.css?v=3">
     <link rel="stylesheet" href="css/overlays.css?v=3">
     <link rel="stylesheet" href="css/containers.css?v=3">
+    <link rel="stylesheet" href="css/projects.css?v=3">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;600&family=Caveat:wght@400..700&family=Patrick+Hand&display=swap"
         rel="stylesheet">
@@ -47,6 +48,7 @@
             <a href="#" id="nav-about-link">about me</a>
         </div>
         <div class="nav-socials">
+            <button id="theme-toggle" class="nav-btn" title="Toggle Light/Dark Theme">Nox</button>
             <a href="mailto:s39ho@uwaterloo.ca" target="_blank" title="Email" onclick="va('event', 'click_social', { type: 'Email' })"><i class="fas fa-envelope"></i></a>
             <a href="https://www.linkedin.com/in/shuxian-susan-ho/" target="_blank" title="LinkedIn" onclick="va('event', 'click_social', { type: 'LinkedIn' })"><i class="fab fa-linkedin"></i></a>
             <a href="https://github.com/shuxianho07" target="_blank" title="GitHub" onclick="va('event', 'click_social', { type: 'GitHub' })"><i class="fab fa-github"></i></a>
@@ -270,38 +272,33 @@
 
         <div id="overlay-projects" class="overlay hidden">
             <div class="overlay-backdrop" data-close="projects"></div>
-            <!-- The Suitcase Container -->
-            <article class="overlay-container container-suitcase">
+            <!-- The Magical Desk Layout -->
+            <article class="projects-archive">
                 <button class="overlay-close suitcase-close" data-close="projects" aria-label="Close">✕</button>
-                <div class="suitcase-content">
-                    <h2 class="container-title">Projects</h2>
-                    <p class="container-subtitle">click on an object</p>
+                
+                <div class="projects-header" title="Projects"></div>
 
-                    <div class="suitcase-items">
-                        <!-- Flight Price Predictor -->
-                        <div class="suitcase-item" data-open="project1" tabindex="0" style="left: 15%; top: 40%;">
-                            <i class="fas fa-paper-plane suitcase-icon"
-                                style="color: #f4f1e1; font-size: 5rem; transform: rotate(-15deg);"></i>
-                            <span class="item-label">Flight Predictor</span>
-                        </div>
-                        <!-- Automated Financial Reporting -->
-                        <div class="suitcase-item" data-open="project2" tabindex="0" style="left: 45%; top: 55%;">
-                            <i class="fas fa-robot suitcase-icon"
-                                style="color: #dcd5c4; font-size: 6rem; transform: rotate(10deg);"></i>
-                            <span class="item-label">Auto Reporting</span>
-                        </div>
-                        <!-- Futures Market -->
-                        <div class="suitcase-item" data-open="project3" tabindex="0" style="left: 75%; top: 30%;">
-                            <i class="fas fa-chart-line suitcase-icon"
-                                style="color: #4a90e2; font-size: 4.5rem; transform: rotate(-5deg);"></i>
-                            <span class="item-label">Futures Market</span>
-                        </div>
+                <div class="projects-desk">
+                    <!-- Flight Price Predictor -->
+                    <div class="project-item flight-predictor" data-open="project1" tabindex="0">
+                        <div class="project-sprite"></div>
+                        <span class="project-tag">Flight Predictor</span>
+                    </div>
+
+                    <!-- Automated Financial Reporting -->
+                    <div class="project-item auto-reporting" data-open="project2" tabindex="0">
+                        <div class="project-sprite"></div>
+                        <span class="project-tag">Auto Reporting</span>
+                    </div>
+
+                    <!-- Futures Market -->
+                    <div class="project-item futures-market" data-open="project3" tabindex="0">
+                        <div class="project-sprite"></div>
+                        <span class="project-tag">Futures Market</span>
                     </div>
                 </div>
-                <!-- Suitcase details -->
-                <div class="suitcase-handle"></div>
-                <div class="suitcase-lock left"></div>
-                <div class="suitcase-lock right"></div>
+
+                <div class="desk-subtitle">Click on an item to inspect the details</div>
             </article>
         </div>
 

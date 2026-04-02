@@ -1,0 +1,125 @@
+/* =
+   PROJECTS ARCHIVE (Magical Desk)
+   ======================================== */
+
+.projects-archive {
+    position: relative;
+    width: 900px;
+    max-width: 95vw;
+    height: 600px;
+    background: #f0e6c9 url('https://www.transparenttextures.com/patterns/old-map.png');
+    border: 2px solid #5c4033;
+    border-radius: 4px;
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.8),
+        inset 0 0 100px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+/* Handwritten title from the sprite sheet */
+.projects-header {
+    width: 600px;
+    height: 160px;
+    background: var(--projects-sprite, url('../assets/project items.png')) no-repeat;
+    background-position: -482px -88px; 
+    background-size: 1536px 1024px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transform: scale(0.8);
+}
+
+.projects-desk {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    perspective: 1000px;
+}
+
+.project-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+}
+
+.project-item:hover {
+    transform: scale(1.1) translateY(-10px);
+    z-index: 10;
+}
+
+.project-item:hover .project-sprite {
+    filter: drop-shadow(0 0 15px rgba(212, 168, 67, 0.6));
+}
+
+.project-sprite {
+    background: var(--projects-sprite, url('../assets/project items.png')) no-repeat;
+    background-size: 1536px 1024px;
+    transition: filter 0.3s ease;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Specific Items Slicing */
+/* Scroll -> Flight Predictor */
+.project-item.flight-predictor .project-sprite {
+    width: 300px;
+    height: 216px;
+    background-position: -304px -254px; /* Shift right to avoid bleed */
+    transform: rotate(-5deg);
+}
+
+/* Pocket Watch -> Auto Reporting */
+.project-item.auto-reporting .project-sprite {
+    width: 210px; 
+    height: 132px;
+    background-position: -628px -768px; /* Shift right to avoid bleed */
+    transform: rotate(10deg);
+}
+
+/* Crystal Ball -> Futures Market */
+.project-item.futures-market .project-sprite {
+    width: 180px;
+    height: 222px;
+    background-position: -1196px -260px; /* Shift right to avoid bleed */
+    transform: rotate(-2deg);
+}
+
+.project-tag {
+    margin-top: 15px;
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: #2c2820;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2px 15px;
+    border-radius: 10px;
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+}
+
+/* Custom "Desk" subtitle */
+.desk-subtitle {
+    position: absolute;
+    bottom: 20px;
+    font-family: 'Patrick Hand', cursive;
+    font-style: italic;
+    color: #5c4033;
+    opacity: 0.7;
+    font-size: 1.2rem;
+}
+
+/* Adjustments for the overlay-projects backdrop */
+#overlay-projects .overlay-backdrop {
+    background: rgba(10, 10, 18, 0.85);
+    backdrop-filter: blur(8px);
+}

@@ -188,7 +188,8 @@ const SPRITES = {
     stopRight: 'assets/right_facing.png',
     loading: 'assets/loading.png',
     door: 'assets/door.png',
-    corridor: 'assets/corridor.jpg'
+    corridor: 'assets/corridor.jpg',
+    projectItems: 'assets/project items.png'
 };
 
 // Preload all sprites and remove white backgrounds via canvas
@@ -237,8 +238,8 @@ function removeWhiteBackground(img) {
 
 function preloadSprites() {
     return new Promise((resolve) => {
-        // Only preload character sprites (not loading image)
-        const entries = Object.entries(SPRITES).filter(([k]) => k !== 'loading');
+        // Preload all sprites including the loading background
+        const entries = Object.entries(SPRITES);
         const uniquePaths = [...new Set(entries.map(([, v]) => v))];
         let loaded = 0;
         uniquePaths.forEach(src => {
@@ -295,6 +296,18 @@ async function runLoadingScreen() {
 
     await preloadSprites();
     clearInterval(phraseInterval);
+
+    // Apply the processed loading background
+    const loadingBg = processedSprites[SPRITES.loading] || SPRITES.loading;
+    loadingScreen.style.setProperty('--loading-bg', `url(${loadingBg})`);
+
+    // Apply the processed projects sprite sheet
+    const projectsSprite = processedSprites[SPRITES.projectItems] || SPRITES.projectItems;
+    const projectsOverlay = document.getElementById('overlay-projects');
+    if (projectsOverlay) {
+        projectsOverlay.style.setProperty('--projects-sprite', `url(${projectsSprite})`);
+    }
+
     subtitle.textContent = 'Come in and find out what I\'ve been up to!';
 
     // Show enter button
@@ -310,5 +323,7 @@ enterBtn.addEventListener('click', () => {
         gameEl.focus();
     }, 800);
 });
+
+initTheme();
 
 // =============================================
