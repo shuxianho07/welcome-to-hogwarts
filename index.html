@@ -29,12 +29,17 @@
       }
     </script>
     <script>
-      // Load real script only in production
+      // Load real scripts only in production
       if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-        const s = document.createElement('script');
-        s.defer = true;
-        s.src = "/_vercel/insights/script.js";
-        document.head.appendChild(s);
+        const sa = document.createElement('script');
+        sa.defer = true;
+        sa.src = "/_vercel/insights/script.js";
+        document.head.appendChild(sa);
+
+        const si = document.createElement('script');
+        si.defer = true;
+        si.src = "/_vercel/speed-insights/script.js";
+        document.head.appendChild(si);
       }
     </script>
 </head>
