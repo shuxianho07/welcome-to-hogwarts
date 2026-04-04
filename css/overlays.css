@@ -51,6 +51,26 @@
     color: var(--gold);
 }
 
+/* Skills container close button */
+.skills-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: transparent;
+    border: none;
+    font-size: 42px;
+    font-family: 'Caveat', cursive;
+    font-weight: bold;
+    color: #3e352b;
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 210;
+}
+
+.skills-close:hover {
+    transform: scale(1.2) rotate(10deg);
+}
+
 .overlay-panel {
     position: relative;
     background: #f4f1e1;

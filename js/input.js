@@ -158,6 +158,16 @@ function openOverlay(id) {
     const overlay = document.getElementById('overlay-' + id);
     if (!overlay) return;
     overlayOpen = true;
+    
+    // Update z-index: make sure the newly opened overlay is on top
+    const allOverlays = document.querySelectorAll('.overlay:not(.hidden)');
+    let maxZ = 200;
+    allOverlays.forEach(o => {
+        const currentZ = parseInt(window.getComputedStyle(o).zIndex) || 200;
+        if (currentZ >= maxZ) maxZ = currentZ + 1;
+    });
+    overlay.style.zIndex = maxZ;
+    
     show(overlay);
     if (window.va) va('event', 'open_overlay', { id: id });
 }
@@ -166,6 +176,7 @@ function closeOverlay(id) {
     const overlay = document.getElementById('overlay-' + id);
     if (!overlay) return;
     hide(overlay);
+    overlay.style.zIndex = '200'; // Reset z-index when closing
     overlayOpen = false;
     canInteract = false;
     currentInteraction = null;

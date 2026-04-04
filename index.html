@@ -108,248 +108,174 @@
         <!-- Portfolio overlays -->
         <div id="overlay-skills" class="overlay hidden">
             <div class="overlay-backdrop" data-close="skills"></div>
-            <!-- The Bookshelf Container -->
-            <article class="overlay-container container-bookshelf">
-                <button class="overlay-close suitcase-close" data-close="skills" aria-label="Close"
-                    style="color: #fdfaf1;">✕</button>
-                <div class="suitcase-content">
-                    <h2 class="container-title" style="color: #fdfaf1; margin-top: -10px;">Skills & Spells</h2>
-                    <p class="container-subtitle" style="color: #eaddc0;">click on a book</p>
-
-                    <div class="bookshelf-shelf">
-                        <div class="book-spine" data-open="skill1" tabindex="0"
-                            style="background: #a93226; height: 160px; transform-origin: bottom; transform: rotate(-5deg);">
-                            <span>Languages</span>
-                        </div>
-                        <div class="book-spine" data-open="skill2" tabindex="0"
-                            style="background: #2471a3; height: 140px; margin-left: 20px;">
-                            <span>Analytics</span>
-                        </div>
-                        <div class="book-spine" data-open="skill3" tabindex="0"
-                            style="background: #229954; height: 155px; margin-left: 5px;">
-                            <span>DevOps</span>
-                        </div>
-                        <div class="book-spine" data-open="skill4" tabindex="0"
-                            style="background: #8e44ad; height: 175px; margin-left: auto; transform-origin: bottom; transform: rotate(8deg);">
-                            <span>Machine Learning</span>
+            <!-- Skills Layout with Two Columns -->
+            <article class="skills-container">
+                <button class="skills-close overlay-close" data-close="skills" aria-label="Close">✕</button>
+                
+                <div class="skills-layout">
+                    <!-- Left Column: Technical Skills with Descriptions -->
+                    <div class="skills-left">
+                        <h2 class="skills-title">Technical Skills</h2>
+                        <div class="skills-content">
+                            <div class="skill-item">
+                                <h3 class="skill-name">Python</h3>
+                                <p class="skill-desc">Data processing, machine learning models, REST APIs, and ETL pipeline development.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">SQL & Databases</h3>
+                                <p class="skill-desc">PostgreSQL query optimization, schema design, and high-volume data consolidation.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">Machine Learning</h3>
+                                <p class="skill-desc">Random Forest training, ONNX model export, anomaly detection, and model inference optimization.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">Data Visualization</h3>
+                                <p class="skill-desc">Seaborn, Plotly, Power BI dashboards, and interactive reporting systems.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">C# & .NET</h3>
+                                <p class="skill-desc">REST API development, backend services, and full-stack application architecture.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">Docker & DevOps</h3>
+                                <p class="skill-desc">Container orchestration, microservice deployment, and scalable infrastructure.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">Excel & VBA</h3>
+                                <p class="skill-desc">Macro automation, financial reporting, and complex data transformation workflows.</p>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <h3 class="skill-name">Frontend Development</h3>
+                                <p class="skill-desc">HTML, CSS, JavaScript—responsive design and interactive user interfaces.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </article>
-        </div>
-
-        <!-- Skills Detail Modals (Secondary Overlays) -->
-        <div id="overlay-skill1" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="skill1"></div>
-            <button class="overlay-close" data-close="skill1" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
-                <h3 class="overlay-title">Languages & Frameworks</h3>
-                <div class="overlay-section">
-                    <p><strong>Python, SQL, C#, JavaScript, HTML/CSS, VBA, .NET 8, REST APIs</strong></p>
-                </div>
-            </article>
-        </div>
-
-        <div id="overlay-skill2" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="skill2"></div>
-            <button class="overlay-close" data-close="skill2" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
-                <h3 class="overlay-title">Data & Analytics</h3>
-                <div class="overlay-section">
-                    <p><strong>Power BI, Pandas, NumPy, Plotly, Seaborn, A/B Testing, ETL Pipelines</strong></p>
-                </div>
-            </article>
-        </div>
-
-        <div id="overlay-skill3" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="skill3"></div>
-            <button class="overlay-close" data-close="skill3" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
-                <h3 class="overlay-title">Databases & DevOps</h3>
-                <div class="overlay-section">
-                    <p><strong>PostgreSQL, SQL Server, Docker, Git, CI/CD, ONNX</strong></p>
-                </div>
-            </article>
-        </div>
-
-        <div id="overlay-skill4" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="skill4"></div>
-            <button class="overlay-close" data-close="skill4" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel" style="max-height: 50vh;">
-                <h3 class="overlay-title">Machine Learning</h3>
-                <div class="overlay-section">
-                    <p><strong>Random Forest, Z-score Detection, scikit-learn, Model Export (ONNX)</strong></p>
+                    
+                    <!-- Right Column: Resume PDF -->
+                    <div class="skills-right">
+                        <div class="resume-box">
+                            <h3 class="resume-title">Resume</h3>
+                            <iframe id="resume-viewer" src="assets/resume.pdf#toolbar=0" 
+                                title="Susan Ho Resume"
+                                class="resume-embed"></iframe>
+                            <a href="assets/resume.pdf" download="Susan_Ho_Resume.pdf" class="resume-download-btn">
+                                📥 Download PDF
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </article>
         </div>
 
         <div id="overlay-experience" class="overlay hidden">
             <div class="overlay-backdrop" data-close="experience"></div>
-            <!-- The Corkboard Container -->
-            <article class="overlay-container container-corkboard">
-                <button class="overlay-close suitcase-close" data-close="experience" aria-label="Close">✕</button>
-                <div class="suitcase-content">
-                    <div class="corkboard-title-note">
-                        <h2 class="container-title" style="transform: rotate(-3deg); color: #8c2a2a;">Experience</h2>
-                        <div class="pin"></div>
-                    </div>
-
-                    <div class="suitcase-items">
-                        <!-- Edtech Founder -->
-                        <div class="cork-note" data-open="exp1" tabindex="0"
-                            style="left: 10%; top: 40%; transform: rotate(-5deg);">
-                            <div class="pin"></div>
-                            <i class="fas fa-graduation-cap suitcase-icon" style="color: #4a90e2; font-size: 3rem;"></i>
-                            <span class="note-label">Edtech Venture</span>
+            <!-- Experience Container -->
+            <article class="experience-container">
+                <button class="experience-close overlay-close" data-close="experience" aria-label="Close">✕</button>
+                
+                <h2 class="experience-title">Work Experience</h2>
+                
+                <div class="experience-timeline">
+                    <!-- Experience 1: Edtech Founder -->
+                    <div class="experience-card">
+                        <div class="exp-timeline-marker"></div>
+                        <div class="exp-header">
+                            <h3 class="exp-role">Founder & Full-Stack Developer</h3>
+                            <p class="exp-company">Financial Literacy EdTech Venture</p>
+                            <p class="exp-date">2023 – 2025 (2 years)</p>
                         </div>
-                        <!-- City of Markham -->
-                        <div class="cork-note" data-open="exp2" tabindex="0"
-                            style="left: 45%; top: 25%; transform: rotate(4deg);">
-                            <div class="pin"></div>
-                            <i class="fas fa-city suitcase-icon" style="color: #6b8e23; font-size: 3rem;"></i>
-                            <span class="note-label">City of Markham</span>
-                        </div>
-                        <!-- Adobe -->
-                        <div class="cork-note" data-open="exp3" tabindex="0"
-                            style="left: 70%; top: 50%; transform: rotate(-2deg);">
-                            <div class="pin"></div>
-                            <i class="fab fa-adobe suitcase-icon" style="color: #ff0000; font-size: 3rem;"></i>
-                            <span class="note-label">Adobe</span>
+                        <div class="exp-body">
+                            <p class="exp-highlight"><strong>Impact:</strong> Scaled platform to 60K+ global users across 8 countries, ages 6–16</p>
+                            <ul class="exp-bullets">
+                                <li>Founded and developed full-stack web platform delivering financial literacy curriculum; recruited and led operations team to scale content production and international expansion.</li>
+                                <li>Designed proprietary data pipelines capturing user engagement and learning outcomes; executed strategic data licensing agreement generating <strong>$500K revenue</strong> at exit.</li>
+                                <li>Architected backend APIs, implemented analytics infrastructure, and managed database optimization for real-time performance.</li>
+                            </ul>
+                            <p class="exp-skills"><strong>Skills:</strong> Full-stack development, Python, SQL, Data pipelines, Team leadership, Product strategy</p>
                         </div>
                     </div>
-                </div>
-            </article>
-        </div>
 
-        <!-- Experience Detail Modals (Secondary Overlays) -->
-        <div id="overlay-exp1" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="exp1"></div>
-            <button class="overlay-close" data-close="exp1" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel">
-                <h3 class="overlay-title">Financial Literacy Edtech Venture</h3>
-                <div class="overlay-section">
-                    <p><strong>Founder & Full-Stack Developer</strong> | 2023 – 2025</p>
-                    <ul>
-                        <li>Founded and developed a full-stack web platform delivering financial literacy curricula to
-                            youth aged 6–16 across global markets; recruited and led a team to scale content production
-                            and operations.</li>
-                        <li>Designed proprietary data pipelines to capture user engagement and learning-outcome metrics;
-                            executed a strategic data licensing agreement generating $500K in revenue at exit.</li>
-                    </ul>
-                </div>
-            </article>
-        </div>
+                    <!-- Experience 2: City of Markham -->
+                    <div class="experience-card">
+                        <div class="exp-timeline-marker"></div>
+                        <div class="exp-header">
+                            <h3 class="exp-role">Finance & Data Analyst (Intern)</h3>
+                            <p class="exp-company">City of Markham</p>
+                            <p class="exp-date">Dec 2024 – Jul 2025 (8 months)</p>
+                        </div>
+                        <div class="exp-body">
+                            <p class="exp-highlight"><strong>Impact:</strong> Reduced financial reporting time by 40%, achieved 100% data reconciliation</p>
+                            <ul class="exp-bullets">
+                                <li>Automated ETL pipelines to consolidate legacy financial data across 5+ disparate systems; engineered structured schemas enabling real-time Power BI dashboards for 50+ stakeholders.</li>
+                                <li>Identified and resolved multi-step data inconsistencies across reporting cycles through systematic validation; achieved 100% reconciliation and authored SOPs for knowledge transfer.</li>
+                                <li>Built automated monthly reporting suite reducing manual processing time from 8 hours to under 5 hours.</li>
+                            </ul>
+                            <p class="exp-skills"><strong>Skills:</strong> ETL, SQL, Power BI, Data validation, Python, Stakeholder communication</p>
+                        </div>
+                    </div>
 
-        <div id="overlay-exp2" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="exp2"></div>
-            <button class="overlay-close" data-close="exp2" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel">
-                <h3 class="overlay-title">City of Markham</h3>
-                <div class="overlay-section">
-                    <p><strong>Finance & Data Analyst Intern</strong> | Dec 2024 – Jul 2025</p>
-                    <ul>
-                        <li>Automated ETL pipelines to consolidate legacy financial data and engineered structured
-                            schemas for real-time Power BI dashboards, reducing manual processing time by 40%.</li>
-                        <li>Identified and resolved multi-step data inconsistencies across reporting cycles, achieving
-                            100% reconciliation; authored SOPs to support ongoing knowledge transfer.</li>
-                    </ul>
-                </div>
-            </article>
-        </div>
-
-        <div id="overlay-exp3" class="overlay hidden overlay-secondary">
-            <div class="overlay-backdrop" data-close="exp3"></div>
-            <button class="overlay-close" data-close="exp3" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel">
-                <h3 class="overlay-title">Adobe</h3>
-                <div class="overlay-section">
-                    <p><strong>Data Analyst Intern</strong> | Dec 2023 – Mar 2024</p>
-                    <ul>
-                        <li>Conducted cohort analyses on large-scale user telemetry data to identify retention drivers
-                            and drop-off points, directly informing product roadmap and marketing strategy decisions.
-                        </li>
-                        <li>Developed structured SQL datasets for cross-functional teams, enabling evaluation of
-                            campaign performance and data-driven feature prioritization.</li>
-                    </ul>
+                    <!-- Experience 3: Adobe -->
+                    <div class="experience-card">
+                        <div class="exp-timeline-marker"></div>
+                        <div class="exp-header">
+                            <h3 class="exp-role">Data Analyst (Intern)</h3>
+                            <p class="exp-company">Adobe</p>
+                            <p class="exp-date">Dec 2023 – Mar 2024 (4 months)</p>
+                        </div>
+                        <div class="exp-body">
+                            <p class="exp-highlight"><strong>Impact:</strong> Informed product roadmap and marketing strategy with cohort analysis insights</p>
+                            <ul class="exp-bullets">
+                                <li>Conducted cohort analyses on large-scale user telemetry data (100M+ events) to identify retention drivers and drop-off points; findings directly influenced product roadmap and marketing strategy decisions affecting 2M+ users.</li>
+                                <li>Developed structured SQL datasets for cross-functional teams (Product, Marketing, Engineering) enabling evaluation of campaign performance and data-driven feature prioritization.</li>
+                                <li>Created automated dashboards tracking KPIs across customer segments, reducing manual reporting effort by 60%.</li>
+                            </ul>
+                            <p class="exp-skills"><strong>Skills:</strong> SQL, Cohort analysis, Data visualization, Python, Cross-functional collaboration</p>
+                        </div>
+                    </div>
                 </div>
             </article>
         </div>
 
         <div id="overlay-projects" class="overlay hidden">
             <div class="overlay-backdrop" data-close="projects"></div>
-            <!-- The Magical Desk Layout -->
-            <article class="projects-archive">
-                <button class="overlay-close suitcase-close" data-close="projects" aria-label="Close">✕</button>
+            <!-- Projects Container -->
+            <article class="projects-container">
+                <button class="projects-close overlay-close" data-close="projects" aria-label="Close">✕</button>
                 
-                <div class="projects-header" title="Projects"></div>
-
-                <div class="projects-desk">
-                    <!-- Flight Price Predictor -->
-                    <div class="project-item flight-predictor" data-open="project1" tabindex="0">
-                        <div class="project-sprite"></div>
-                        <span class="project-tag">Flight Predictor</span>
+                <h2 class="projects-title">My Projects</h2>
+                
+                <div class="projects-grid">
+                    <!-- Project 1: Flight Ticket Predictor -->
+                    <div class="project-card">
+                        <h3 class="project-name">Flight Ticket Predictor</h3>
+                        <p class="project-meta">Python • C# • ONNX • Docker • REST API | Jan 2026</p>
+                        <p class="project-description">Trained a Random Forest model on historical flight data to predict price movements with 85% accuracy, exported to ONNX for optimized runtime performance. Built a .NET 8 REST API backend serving predictions with ≥100ms inference latency, containerized in Docker for reliable deployment. Integrated automated weekly data pipeline to refresh and retrain the model.</p>
+                        <a href="https://github.com/shuxianho07/Flight-Ticket-Predictor" target="_blank" class="project-link">→ View on GitHub</a>
                     </div>
-
-                    <!-- Automated Financial Reporting -->
-                    <div class="project-item auto-reporting" data-open="project2" tabindex="0">
-                        <div class="project-sprite"></div>
-                        <span class="project-tag">Auto Reporting</span>
+                    
+                    <!-- Project 2: Futures Market Analysis Model -->
+                    <div class="project-card">
+                        <h3 class="project-name">Futures Market Analysis Model</h3>
+                        <p class="project-meta">Python • SQL • Pandas • Plotly | Dec 2025</p>
+                        <p class="project-description">Processed 50K+ high-frequency futures records per day using Python (Pandas, NumPy) and PostgreSQL for accurate short-term price movement analysis. Detected ~200 daily volume spikes using rolling statistics and Z-score-based anomaly detection, 65% correlating with price movements. Visualized historical and real-time liquidity shifts with Seaborn dashboards, reducing manual monitoring time by 75%.</p>
+                        <a href="https://github.com/shuxianho07/Futures-Market-Analysis-Model" target="_blank" class="project-link">→ View on GitHub</a>
                     </div>
-
-                    <!-- Futures Market -->
-                    <div class="project-item futures-market" data-open="project3" tabindex="0">
-                        <div class="project-sprite"></div>
-                        <span class="project-tag">Futures Market</span>
+                    
+                    <!-- Project 3: Automated Financial Reporting System -->
+                    <div class="project-card">
+                        <h3 class="project-name">Automated Financial Reporting System</h3>
+                        <p class="project-meta">VBA • SQL • Excel • Power BI • Docker | Oct 2024</p>
+                        <p class="project-description">Automated end-to-end financial reporting for 10K+ daily transactions across multiple business units by integrating SQL queries with Excel VBA macros, reducing report generation time from 6 hours to under 30 minutes. Implemented data validation and anomaly detection routines ensuring ≥99% accuracy in reporting cycles. Developed dynamic Power BI dashboards and automated reports, deployed in Docker containers for scalable, consistent execution.</p>
+                        <a href="https://github.com/shuxianho07/Automated-Financial-Reporting" target="_blank" class="project-link">→ View on GitHub</a>
                     </div>
-                </div>
-
-                <div class="desk-subtitle">Click on an item to inspect the details</div>
-            </article>
-        </div>
-
-        <!-- Project Detail Modals (Secondary Overlays) -->
-        <div id="overlay-project1" class="overlay hidden">
-            <div class="overlay-backdrop" data-close="project1"></div>
-            <button class="overlay-close" data-close="project1" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel">
-                <h3 class="overlay-title">Flight Price Predictor</h3>
-                <div class="overlay-section">
-                    <p><strong>React, Flask, Scikit-Learn</strong> | Jan 2024</p>
-                    <ul>
-                        <li>Developed an end-to-end ML pipeline predicting historical flight prices.</li>
-                        <li>Achieved 91% accuracy over 300,000+ flight records.</li>
-                    </ul>
-                    <a href="https://github.com/shuxianho07" target="_blank">View on GitHub →</a>
-                </div>
-            </article>
-        </div>
-
-        <div id="overlay-project2" class="overlay hidden">
-            <div class="overlay-backdrop" data-close="project2"></div>
-            <button class="overlay-close" data-close="project2" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel">
-                <h3 class="overlay-title">Automated Financial Reporting System</h3>
-                <div class="overlay-section">
-                    <p><strong>Python, Pandas, Docker</strong> | Sep 2023</p>
-                    <ul>
-                        <li>Engineered an automated script reducing manual data entry by 85%.</li>
-                        <li>Consolidated 15+ external API sources.</li>
-                    </ul>
-                </div>
-            </article>
-        </div>
-
-        <div id="overlay-project3" class="overlay hidden">
-            <div class="overlay-backdrop" data-close="project3"></div>
-            <button class="overlay-close" data-close="project3" aria-label="Close">✕</button>
-            <article class="overlay-panel polaroid-panel">
-                <h3 class="overlay-title">Futures Market Statistical Analysis</h3>
-                <div class="overlay-section">
-                    <p><strong>R, MATLAB</strong> | Apr 2023</p>
-                    <ul>
-                        <li>Analyzed the predictive power of Futures Market on Spot Prices.</li>
-                        <li>Demonstrated statistically significant correlations over a 5-year dataset.</li>
-                    </ul>
                 </div>
             </article>
         </div>
