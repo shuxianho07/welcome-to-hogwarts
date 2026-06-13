@@ -1,0 +1,11 @@
+/* =
+   SCENE COMPONENTS
+   ======================================== */
+.door-marker {
+    position: absolute;
+    height: 60vh;
+    /* Tall invisible interaction zone */
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 10;
+}

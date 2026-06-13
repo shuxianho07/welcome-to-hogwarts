@@ -1,0 +1,214 @@
+/* fallback.css - Glass-card styles inspired by jackie-portfolio */
+
+:root {
+  --bg-color: #0f172a; /* Slate 900 */
+  --text-primary: #f8fafc; /* Slate 50 */
+  --text-secondary: #94a3b8; /* Slate 400 */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-hover: rgba(255, 255, 255, 0.1);
+  --accent-color: #10b981; /* Emerald 500 */
+}
+
+body.fallback-body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Outfit', 'Inter', sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fallback-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+/* Global Navigation override for fallback */
+.fallback-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.fallback-nav a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.fallback-nav a:hover {
+  color: var(--accent-color);
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--text-primary);
+  color: var(--bg-color);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  background-color: #e2e8f0;
+}
+
+/* Typography */
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+}
+
+.section-desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  max-width: 600px;
+}
+
+/* Glass Cards */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.interactive-card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* Grid Layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Experience Card specific */
+.exp-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.exp-role {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-primary);
+}
+
+.exp-company {
+  font-size: 1rem;
+  color: var(--accent-color);
+  margin: 0 0 1rem 0;
+}
+
+.exp-bullets {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.exp-bullets li {
+  margin-bottom: 0.5rem;
+}
+
+/* Project Card specific */
+.project-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.project-meta {
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.project-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.project-link {
+  display: inline-block;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.project-link:hover {
+  color: var(--accent-color);
+}
+
+/* Skills Badges */
+.skills-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.skill-badge {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Social Links */
+.social-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.social-link {
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.social-link:hover {
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}

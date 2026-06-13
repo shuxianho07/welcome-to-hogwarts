@@ -1,0 +1,30 @@
+@import '../css/styles.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light Mode (Lumos) */
+    --hogwarts-bg: #f5f0e1;
+    --hogwarts-castle: #e8e2d2;
+    --hogwarts-gold: #000000;
+    --hogwarts-gold-rgb: 0, 0, 0;
+    --hogwarts-parchment: #1a1510;
+    --hogwarts-darkParchment: #2a2520;
+    
+    color-scheme: light;
+  }
+  .dark {
+    /* Dark Mode (Nox) */
+    --hogwarts-bg: #0a0a12;
+    --hogwarts-castle: #12111d;
+    --hogwarts-gold: #d4a843;
+    --hogwarts-gold-rgb: 212, 168, 67;
+    --hogwarts-parchment: #f0e6c9;
+    --hogwarts-darkParchment: #dac89e;
+    
+    color-scheme: dark;
+  }
+}

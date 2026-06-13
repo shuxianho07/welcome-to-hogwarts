@@ -1,0 +1,952 @@
+/* =
+    Interactive Portfolio
+   ======================================== */
+
+/* --- DESIGN TOKENS --- */
+/* design tokens are the colors and fonts used in the website */
+:root {
+    --bg-dark: #0a0a12;
+    --bg-castle: #12111d;
+    --bg-warm: #1a1510;
+    --gold: #d4a843;
+    --gold-dim: #b8922e;
+    --gold-glow: rgba(212, 168, 67, 0.4);
+    --gold-bright: #f5d67b;
+    --parchment: #f0e6c9;
+    --parchment-dark: #dac89e;
+    --stone: #3a3845;
+    --stone-light: #5a5768;
+    --maroon: #5c1a1a;
+    --green-dark: #1a3a2a;
+    --text-main: #e8e4dd;
+    --text-dim: #9a968e;
+    --overlay-bg: rgba(10, 10, 18, 0.92);
+    --panel-bg: rgba(22, 20, 32, 0.95);
+    --panel-border: rgba(212, 168, 67, 0.25);
+    --transition-fast: 150ms ease;
+    --transition-med: 300ms ease;
+    --transition-slow: 600ms ease;
+}
+
+/* --- BASE RESET --- */
+*,
+/*this is a reset for all the elements in the website*/
+
+*::before,
+*::after {
+    box-sizing: border-box;
+    /*this is a reset for all the elements in the website*/
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    cursor: default;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+}
+
+
+/* =
+   GAME CONTAINER
+   ======================================== */
+/*this is the game container*/
+#game {
+    position: relative;
+    width: 100vw;
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+#game.hidden {
+    display: none;
+}
+
+/* this is for the landing page*/
+#game::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.9),
+        inset 0 0 80px rgba(0, 0, 0, 0.5);
+    z-index: 500;
+}
+
+/* --- WORLD --- */
+#world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: transform;
+    z-index: 1;
+}
+
+#bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    user-select: none;
+    image-rendering: auto;
+}
+
+/* --- CHARACTER --- */
+#character {
+    position: absolute;
+    width: 18.05vw;
+    height: 46.95vh;
+    object-fit: contain;
+    object-position: center bottom;
+    transform: translate(-50%, -100%) scaleX(var(--facing, 1));
+    transform-origin: 50% 100%;
+    pointer-events: none;
+    z-index: 100;
+    /* Subtle shadow — white backgrounds removed programmatically via canvas */
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+#character.jumping {
+    filter: none !important;
+}
+
+/* Half-body mode for the corridor/inside scene — show waist-up only */
+#character.half-body {
+    clip-path: inset(0 0 45% 0);
+    /* Sized so the visible 55% reaches roughly mid-page — realistic adult scale */
+    width: 34.73vw;
+    height: 90.28vh;
+    /* -45% pushes the visible portion's bottom right to the screen edge */
+    transform: translate(-50%, -45%) scaleX(var(--facing, 1));
+    /* Smooth the left/right flip so direction changes aren't jarring */
+    transition: transform 0.15s ease;
+}
+
+/* --- SPOTLIGHT --- */
+#spotlight-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#spotlight-overlay.active {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+#spotlight-overlay.spotlight {
+    background: radial-gradient(circle 500px at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+            transparent 0%,
+            transparent 20%,
+            rgba(0, 0, 0, 0.08) 30%,
+            rgba(0, 0, 0, 0.15) 40%,
+            rgba(0, 0, 0, 0.25) 55%,
+            rgba(0, 0, 0, 0.32) 70%,
+            rgba(0, 0, 0, 0.35) 100%);
+}
+
+
+/* =
+   LANDING PAGE TEXT
+   ======================================== */
+.greeting-text {
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    font-family: 'Caveat', cursive;
+    font-size: 5rem;
+    line-height: 1.1;
+    color: var(--gold-bright);
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8),
+        0 0 30px var(--gold-glow);
+    transform: rotate(-3deg);
+    pointer-events: none;
+    z-index: 50;
+    animation: float 4s ease-in-out infinite;
+}
+
+.greeting-text .highlight {
+    font-size: 7.5rem;
+    color: #fff;
+    display: block;
+    margin-top: -10px;
+}
+
+.instruction-text {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1px;
+    z-index: 50;
+    pointer-events: none;
+}
+
+
+/* =
+   HOTSPOT MARKERS (in-world interactive items)
+   ======================================== */
+.hotspot-marker {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: auto;
+    z-index: 50;
+    transition: filter var(--transition-med);
+    cursor: pointer;
+}
+
+.hotspot-marker.near {
+    filter: drop-shadow(0 0 20px var(--gold-glow));
+}
+
+.hotspot-icon {
+    font-size: 48px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+    animation: float 3s ease-in-out infinite;
+}
+
+.hotspot-icon-img {
+    display: block;
+    object-fit: fill;
+    /* stretch to exactly match the background item */
+    border: none;
+    border-radius: 0;
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    opacity: 0.88;
+    transition: opacity var(--transition-fast);
+}
+
+.hotspot-icon-img:hover {
+    opacity: 1;
+}
+
+.hotspot-label {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--parchment);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+
+/* =
+   ANIMATIONS
+   ======================================== */
+@keyframes shimmer {
+
+    0%,
+    100% {
+        text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(212, 168, 67, 0.15);
+    }
+
+    50% {
+        text-shadow: 0 0 40px rgba(212, 168, 67, 0.6), 0 0 80px rgba(212, 168, 67, 0.25);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    25% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    50% {
+        opacity: 0.85;
+        transform: scale(0.98);
+    }
+
+    75% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.container-corkboard {
+    position: relative;
+    width: 650px;
+    max-width: 90vw;
+    height: 450px;
+    background: #d4a373 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="3" fill="rgba(0,0,0,0.05)"/></svg>');
+    border: 15px solid #5c4033;
+    /* Dark wood border */
+    border-radius: 8px;
+    /* sharp corners */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.4);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.corkboard-title-note {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fdfaf1;
+    padding: 10px 30px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pin {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: #e74c3c;
+    border-radius: 50%;
+    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.4), 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.pin::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+}
+
+.cork-note {
+    position: absolute;
+    background: #fdfaf1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 130px;
+}
+
+.cork-note:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 10;
+}
+
+.cork-note .note-label {
+    font-family: 'Patrick Hand', cursive;
+    color: #2c2820;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+
+.container-notepad {
+    position: relative;
+    width: 600px;
+    max-width: 90vw;
+    background: transparent;
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+}
+
+.container-notepad .notepad-content {
+    box-shadow: 10px 15px 0px rgba(0, 0, 0, 0.3);
+    margin-left: 20px;
+    width: 100%;
+}
+
+.notepad-binding {
+    position: absolute;
+    left: 0;
+    top: 5%;
+    bottom: 5%;
+    width: 45px;
+    background: #a93226;
+    /* Dark red binding tape */
+    border-radius: 6px 0 0 6px;
+    box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.4), 4px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 210;
+}
+
+.spiral {
+    position: absolute;
+    left: 10px;
+    width: 25px;
+    height: 12px;
+    background: #111;
+    border-radius: 6px;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+
+.skills-container {
+    position: relative;
+    width: 1000px;
+    max-width: 95vw;
+    height: 650px;
+    background-color: #E8DCC4;
+    /* Parchment with dot texture like About Me */
+    background-image: radial-gradient(#d4c5ab 1px, transparent 0), radial-gradient(#d4c5ab 1px, transparent 0);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    /* Organic hand-drawn style border */
+    border: 8px solid #3e352b;
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    box-shadow: 4px 4px 0px rgba(62, 53, 43, 0.8), -2px -3px 0px rgba(62, 53, 43, 0.6), 15px 15px 30px rgba(0, 0, 0, 0.6);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 30px;
+}
+
+.skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.skills-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    padding-right: 12px;
+}
+
+.skills-title {
+    font-family: 'Caveat', cursive;
+    font-size: 48px;
+    color: #8c2a2a;
+    margin: 0 0 5px 0;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+    transform: rotate(-1deg);
+}
+
+.skills-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skill-paragraph {
+    background: transparent;
+    padding: 16px 0;
+    border-left: 4px solid #5c4033;
+    border-bottom: 2px dashed rgba(92, 64, 51, 0.3);
+    box-shadow: none;
+}
+
+.skill-paragraph h3 {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: #8c2a2a;
+    margin: 0 0 8px 0;
+    transform: rotate(-1deg);
+}
+
+.skill-paragraph p {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    color: #3e352b;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.skill-item {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 12px 16px;
+    border-left: 5px solid #8c2a2a;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.skill-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateX(4px);
+}
+
+.skill-name {
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    color: #8c2a2a;
+    margin: 0 0 4px 0;
+    transform: rotate(-1deg);
+    font-weight: 600;
+}
+
+.skill-desc {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: #3e352b;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.skills-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    overflow-y: auto;
+}
+
+.resume-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.7);
+    border: 4px solid #3e352b;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 16px;
+    text-align: center;
+    height: 100%;
+    max-height: 550px;
+}
+
+.resume-title {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    color: #8c2a2a;
+    margin: 0 0 12px 0;
+    transform: rotate(-2deg);
+}
+
+.resume-embed {
+    flex: 1;
+    border: 2px solid #d4a867;
+    border-radius: 6px;
+    overflow: auto;
+}
+
+.resume-embed::-webkit-scrollbar {
+    width: 6px;
+}
+
+.resume-embed::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.resume-embed::-webkit-scrollbar-thumb {
+    background: rgba(92, 64, 51, 0.4);
+    border-radius: 3px;
+}
+
+.resume-embed::-webkit-scrollbar-thumb:hover {
+    background: rgba(92, 64, 51, 0.6);
+}
+
+.resume-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #543622;
+    color: #E8DCC4;
+    padding: 12px 20px;
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    border: 3px solid #3e352b;
+    border-radius: 40px 15px 30px 20px / 20px 30px 15px 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px rgba(62, 53, 43, 0.6);
+    transform: rotate(-2deg);
+    margin-top: 12px;
+}
+
+.resume-download-btn:hover {
+    box-shadow: 5px 5px 0px rgba(62, 53, 43, 0.8);
+    background: #6b4a2f;
+    transform: rotate(0deg) translateY(-2px);
+}
+
+/* Custom scrollbar for skills-left */
+.skills-left::-webkit-scrollbar {
+    width: 8px;
+}
+
+.skills-left::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.skills-left::-webkit-scrollbar-thumb {
+    background: rgba(92, 64, 51, 0.3);
+    border-radius: 4px;
+}
+
+.skills-left::-webkit-scrollbar-thumb:hover {
+    background: rgba(92, 64, 51, 0.6);
+} 
+
+
+.container-bookshelf {
+    position: relative;
+    width: 600px;
+    max-width: 90vw;
+    height: 400px;
+    background: #3e2617;
+    /* Dark library wood */
+    border: 15px solid #231107;
+    border-radius: 8px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 60px rgba(0, 0, 0, 0.8);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.bookshelf-shelf {
+    position: absolute;
+    bottom: 40px;
+    left: 5%;
+    right: 5%;
+    height: auto;
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.book-spine {
+    width: auto;
+    min-width: 120px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+}
+
+.book-spine:hover {
+    transform: translateY(-8px) scale(1.05);
+    z-index: 10;
+    box-shadow: 0 8px 20px rgba(212, 168, 67, 0.4);
+}
+
+.book-spine span {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    color: #fdfaf1;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    transform: none;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+}
+
+/* =
+   EXPERIENCE CONTAINER (Timeline Card Layout)
+   ======================================== */
+
+.experience-container {
+    position: relative;
+    width: 1000px;
+    max-width: 95vw;
+    height: 650px;
+    background-color: #E8DCC4;
+    /* Parchment with dot texture like About Me */
+    background-image: radial-gradient(#d4c5ab 1px, transparent 0), radial-gradient(#d4c5ab 1px, transparent 0);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    /* Organic hand-drawn style border */
+    border: 8px solid #3e352b;
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    box-shadow: 4px 4px 0px rgba(62, 53, 43, 0.8), -2px -3px 0px rgba(62, 53, 43, 0.6), 15px 15px 30px rgba(0, 0, 0, 0.6);
+    z-index: 205;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+}
+
+.experience-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: transparent;
+    border: none;
+    font-size: 42px;
+    font-family: 'Caveat', cursive;
+    font-weight: bold;
+    color: #3e352b;
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 210;
+}
+
+.experience-close:hover {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.experience-title {
+    font-family: 'Caveat', cursive;
+    font-size: 52px;
+    color: #8c2a2a;
+    margin: 0 0 25px 0;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+    transform: rotate(-2deg);
+}
+
+.experience-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    padding-right: 10px;
+    flex: 1;
+}
+
+/* Custom scrollbar for experience timeline */
+.experience-timeline::-webkit-scrollbar {
+    width: 8px;
+}
+
+.experience-timeline::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.experience-timeline::-webkit-scrollbar-thumb {
+    background: rgba(92, 64, 51, 0.4);
+    border-radius: 4px;
+}
+
+.experience-timeline::-webkit-scrollbar-thumb:hover {
+    background: rgba(92, 64, 51, 0.6);
+}
+
+.experience-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 20px;
+    border-left: 6px solid #8c2a2a;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding-left: 30px;
+}
+
+.experience-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateX(6px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.exp-timeline-marker {
+    position: absolute;
+    left: -21px;
+    top: 24px;
+    width: 14px;
+    height: 14px;
+    background: #8c2a2a;
+    border: 3px solid #E8DCC4;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #3e352b;
+}
+
+.exp-header {
+    margin-bottom: 14px;
+}
+
+.exp-role {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: #8c2a2a;
+    margin: 0 0 4px 0;
+    transform: rotate(-1deg);
+}
+
+.exp-company {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px;
+    color: #5c4033;
+    margin: 0 0 6px 0;
+    font-weight: 600;
+}
+
+.exp-date {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: #8b7355;
+    margin: 0;
+    font-style: italic;
+}
+
+.exp-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.exp-highlight {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    color: #3e352b;
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(212, 168, 103, 0.15);
+    border-left: 3px solid #d4a867;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.exp-bullets {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.exp-bullets li {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: #3e352b;
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+}
+
+.exp-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: #8c2a2a;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.exp-skills {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 12px;
+    color: #5c4033;
+    margin: 8px 0 0 0;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(92, 64, 51, 0.3);
+    font-style: italic;
+}
+
+/* Adjustments for the overlay-experience backdrop */
+#overlay-experience .overlay-backdrop {
+    background: rgba(10, 10, 18, 0.85);
+    backdrop-filter: blur(8px);
+}
