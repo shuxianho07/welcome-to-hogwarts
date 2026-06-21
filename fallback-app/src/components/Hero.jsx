@@ -81,7 +81,11 @@ export default function Hero({ onNavigate }) {
       
       {/* CLEAN BACKGROUND */}
       <motion.div 
-        className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-screen h-[110vh] -z-10 pointer-events-none"
+        className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-screen h-[160vh] -z-10 pointer-events-none"
+        style={{
+          maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)'
+        }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--hogwarts-castle)_0%,var(--hogwarts-bg)_75%)]"></div>
       </motion.div>
@@ -134,7 +138,7 @@ export default function Hero({ onNavigate }) {
       <section className="relative z-20 mt-12 mb-16 max-w-6xl mx-auto px-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
         >
           {stats.map((stat, idx) => (
             <div key={idx} className="bg-hogwarts-castle flex flex-col items-center justify-center p-6 rounded-lg border border-hogwarts-gold/20 shadow-md">

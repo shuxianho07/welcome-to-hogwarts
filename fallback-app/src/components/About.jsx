@@ -7,7 +7,7 @@ export default function About() {
         <p className="mb-3 text-xs font-['Cinzel'] font-semibold uppercase tracking-[0.2em] text-hogwarts-gold dark:text-hogwarts-gold">
           About
         </p>
-        <h1 className="text-3xl font-['Cinzel'] font-bold tracking-tight text-hogwarts-bg dark:text-hogwarts-parchment">
+        <h1 className="text-3xl font-['Cinzel'] font-bold tracking-tight text-hogwarts-parchment">
           Hi, I'm Susan Ho.
         </h1>
 
@@ -25,7 +25,7 @@ export default function About() {
           <p className="mb-3 text-xs font-['Cinzel'] font-semibold uppercase tracking-[0.2em] text-hogwarts-gold dark:text-hogwarts-gold">
             Experience
           </p>
-          <h2 className="text-2xl font-['Cinzel'] font-bold tracking-tight text-hogwarts-bg dark:text-hogwarts-parchment">
+          <h2 className="text-2xl font-['Cinzel'] font-bold tracking-tight text-hogwarts-parchment">
             Practical AI, data, and internal tooling work
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-hogwarts-parchment/80 dark:text-hogwarts-parchment/70">
@@ -43,7 +43,7 @@ export default function About() {
                   <p className="text-xs font-['Cinzel'] font-semibold uppercase tracking-[0.16em] text-hogwarts-gold dark:text-hogwarts-gold">
                     {experience.company}
                   </p>
-                  <h3 className="mt-2 text-lg font-['Cinzel'] font-semibold text-hogwarts-bg dark:text-hogwarts-parchment">
+                  <h3 className="mt-2 text-lg font-['Cinzel'] font-semibold text-hogwarts-parchment">
                     {experience.role}
                   </h3>
                   <p className="mt-2 text-sm text-slate-600 dark:text-hogwarts-parchment/60">
@@ -103,19 +103,19 @@ export default function About() {
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="glass-card interactive-card p-4">
-            <p className="text-sm font-['Cinzel'] font-semibold text-hogwarts-bg dark:text-hogwarts-parchment">Looking for</p>
+            <p className="text-sm font-['Cinzel'] font-semibold text-hogwarts-parchment">Looking for</p>
             <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-hogwarts-parchment/70">
               Backend Engineering, AI Infrastructure, Data Science, Quant Research Tools, Full-Stack Systems
             </p>
           </div>
           <div className="glass-card interactive-card p-4">
-            <p className="text-sm font-['Cinzel'] font-semibold text-hogwarts-bg dark:text-hogwarts-parchment">Core focus</p>
+            <p className="text-sm font-['Cinzel'] font-semibold text-hogwarts-parchment">Core focus</p>
             <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-hogwarts-parchment/70">
               RAG, vector databases, data pipelines, APIs, optimization, ML systems
             </p>
           </div>
           <div className="glass-card interactive-card p-4">
-            <p className="text-sm font-['Cinzel'] font-semibold text-hogwarts-bg dark:text-hogwarts-parchment">Working style</p>
+            <p className="text-sm font-['Cinzel'] font-semibold text-hogwarts-parchment">Working style</p>
             <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-hogwarts-parchment/70">
               Clarity, correctness, testing, extensibility, system-level thinking
             </p>
