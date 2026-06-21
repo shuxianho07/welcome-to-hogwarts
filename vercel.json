@@ -1,7 +1,6 @@
 {
   "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": ".",
   "rewrites": [
     { "source": "/quick-links/(.*)", "destination": "/quick-links/index.html" },
     { "source": "/:path(skills|experience|projects|about|inside|common-room)", "destination": "/index.html" }
