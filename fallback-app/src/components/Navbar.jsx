@@ -18,7 +18,7 @@ export default function Navbar({ theme, onToggleTheme }) {
     <nav className="sticky top-0 z-50 w-full flex items-center justify-between px-6 lg:px-10 py-4 bg-hogwarts-bg/95 backdrop-blur-md border-b border-hogwarts-gold/20 font-['Patrick_Hand'] pointer-events-auto">
       
       {/* Back to Game Button */}
-      <a href="../index.html" className="px-4 py-2 bg-hogwarts-gold/90 text-hogwarts-bg font-['Cinzel'] text-sm font-semibold rounded-lg shadow-md hover:scale-105 transition-transform shrink-0">
+      <a href="../index.html" className="px-4 py-2 bg-white/90 dark:bg-hogwarts-gold/90 text-hogwarts-gold dark:text-hogwarts-bg font-['Cinzel'] text-sm font-semibold rounded-lg shadow-md hover:scale-105 transition-transform shrink-0">
         ⬅ Game
       </a>
 

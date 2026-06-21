@@ -26,7 +26,7 @@ export default {
         hogwarts: {
           bg: 'var(--hogwarts-bg)',
           castle: 'var(--hogwarts-castle)',
-          gold: 'var(--hogwarts-gold)',
+          gold: 'rgba(var(--hogwarts-gold-rgb), <alpha-value>)',
           parchment: 'var(--hogwarts-parchment)',
           darkParchment: 'var(--hogwarts-darkParchment)',
         }
